@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:productive_ramadan_app/utils/buttons/button.dart';
-import 'dart:ui';
 
-import 'landing.dart';
+import '../lib/landing.dart';
 
 void main() {
   //Unit test
-  testWidgets(
-      "Given goToDailyTasks is called when Daily Ramadan Tasks button is clicked",
-      (tester) async {
+  testWidgets(" Daily Ramadan Tasks button has text", (tester) async {
     //Arrange
     await tester.pumpWidget(
       ProviderScope(
@@ -19,12 +15,28 @@ void main() {
         ),
       ),
     );
-    final button = find.byType(Button);
+
     //Act
-    await tester.tap(button);
-    await tester.pump();
+    final text = find.text("Daily Ramadan Tasks");
 
     //Assert
-    expect(button, findsOneWidget);
+    expect(text, findsOneWidget);
+  });
+
+  testWidgets("Choose an option text exists", (tester) async {
+    //Arrange
+    await tester.pumpWidget(
+      ProviderScope(
+        child: MaterialApp(
+          home: LandingPage(),
+        ),
+      ),
+    );
+
+    //Act
+    final text = find.text("Choose an option");
+
+    //Assert
+    expect(text, findsOneWidget);
   });
 }

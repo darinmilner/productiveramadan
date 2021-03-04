@@ -50,6 +50,7 @@ type hadithHandlers struct {
 	hadith map[string]Hadith
 }
 
+//NewHadithHandlers returns the map of hadith and their day number
 func NewHadithHandlers() *hadithHandlers {
 	return &hadithHandlers{
 		hadith: map[string]Hadith{
@@ -60,6 +61,14 @@ func NewHadithHandlers() *hadithHandlers {
 			"id2": Hadith{
 				Text: "Hadith2",
 				Day:  2,
+			},
+			"id3": Hadith{
+				Text: "Hadith3",
+				Day:  3,
+			},
+			"id4": Hadith{
+				Text: "Hadith4",
+				Day:  4,
 			},
 		},
 	}
@@ -88,6 +97,57 @@ func (h *hadithHandlers) GetHadith(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(jsonBytes)
 
+}
+
+func NewAyahHandlers() *ayahHandlers {
+	return &ayahHandlers{
+		ayah: map[string]Ayah{
+			"id1": Ayah{
+				Text: "Ayah1",
+				Day:  1,
+			},
+			"id2": Ayah{
+				Text: "Ayah2",
+				Day:  2,
+			},
+			"id3": Ayah{
+				Text: "Ayah3",
+				Day:  3,
+			},
+		},
+	}
+
+}
+
+//Ayah struct
+type Ayah struct {
+	Day  int
+	Text string
+}
+type ayahHandlers struct {
+	ayah map[string]Ayah
+}
+
+//GetAyahs function sends ayahs as JSON
+func (h *ayahHandlers) GetAyahs(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
+	ayahs := make([]Ayah, len(h.ayah))
+
+	index := 0
+	for _, ayah := range h.ayah {
+		ayahs[index] = ayah
+		index++
+	}
+
+	jsonBytes, err := json.Marshal(ayahs)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+	}
+
+	w.Header().Add("content-type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonBytes)
 }
 
 func enableCors(w *http.ResponseWriter) {

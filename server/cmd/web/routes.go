@@ -12,12 +12,14 @@ import (
 func routes(app *config.AppConfig) http.Handler {
 	mux := chi.NewRouter()
 
-	mux.Use(WriteToConsole)
+	mux.Use(WriteToConsole) //Testing middleware
 
 	hadithHandler := handlers.NewHadithHandlers()
+	ayahHandler := handlers.NewAyahHandlers()
 	mux.Get("/", handlers.Repo.Home)
 	mux.Get("/about", handlers.Repo.About)
 	mux.Get("/hadiths", hadithHandler.GetHadith)
+	mux.Get("/ayahs", ayahHandler.GetAyahs)
 
 	fileServer := http.FileServer(http.Dir("./static/"))
 
@@ -26,7 +28,7 @@ func routes(app *config.AppConfig) http.Handler {
 	return mux
 }
 
-//WriteToConsole middleware--USELESS
+//WriteToConsole middleware--USELESS-Just For Testing
 func WriteToConsole(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Println("Hit the page")

@@ -170,16 +170,6 @@ class TodoItem extends HookWidget {
                 itemFocusNode.requestFocus();
                 textFieldFocusNode.requestFocus();
               },
-              // trailing: IconButton(
-              //   icon: Icon(
-              //     FontAwesomeIcons.trash,
-              //     size: 20,
-              //     color: Colors.red,
-              //   ),
-              //   onPressed: () {
-              //     context.read(todoListProvider).remove(todo);
-              //   },
-              // ),
               leading: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Container(
