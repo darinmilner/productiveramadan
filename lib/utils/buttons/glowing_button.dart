@@ -66,10 +66,10 @@ class GlowingButton extends HookWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.check,
-              color: Colors.white,
-            ),
+            // Icon(
+            //   Icons.check,
+            //   color: Colors.white,
+            // ),
             Container(
               width: MediaQuery.of(context).size.width / 10,
             ),

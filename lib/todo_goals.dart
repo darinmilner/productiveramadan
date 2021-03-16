@@ -2,33 +2,75 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:productive_ramadan_app/repositories/todo_goals_repository.dart';
 import 'package:productive_ramadan_app/todo.dart';
 import 'package:productive_ramadan_app/utils/alertbox.dart';
+import 'package:productive_ramadan_app/utils/appbar.dart';
 import 'package:productive_ramadan_app/utils/constants.dart';
 import 'package:productive_ramadan_app/utils/side_drawer.dart';
 import 'package:productive_ramadan_app/utils/toolbar.dart';
 
+import 'landing.dart';
+
 class TodoHome extends HookWidget {
   TodoHome({Key key}) : super(key: key);
   ToolBar toolbar = ToolBar();
+  Todo todo = Todo();
+  bool pageIsLoading = true;
 
   static const routeName = "/todogoals";
 
+  MyAppBar _appBar = MyAppBar();
   @override
   Widget build(BuildContext context) {
     final newTodoController = useTextEditingController();
     final todos = useProvider(filteredTodos);
+
+    //TODO: call DB from here
+    getTodoGoalsFromDb() async {
+      print(pageIsLoading);
+      if (pageIsLoading) {
+        final todosFromDB = useProvider(getTodosFromDB);
+        print("Todos from db in widget  + $todosFromDB");
+
+        todosFromDB.when(
+            data: (todo) {
+              for (int i = 0; i < todo.length; i++) {
+                print(todo[i]);
+                todos.add(todo[i]);
+              }
+
+              pageIsLoading = false;
+            },
+            loading: () => CircularProgressIndicator(),
+            error: (err, err1) => print(err));
+      } else {
+        return;
+      }
+    }
+
+    getTodoGoalsFromDb();
+    //todos.add(Todo(description: "Work", completed: false, id: "3"));
 
     return Scaffold(
       appBar: AppBar(
         title: Center(
           child: Text(
             "Productive Ramadan",
-            style: TextStyle(fontSize: 25.0),
+            style: TextStyle(fontSize: 25.0, color: Colors.amberAccent),
           ),
         ),
+        actions: [
+          IconButton(
+              icon: Icon(FontAwesomeIcons.home),
+              onPressed: () {
+                todos.clear();
+                Navigator.of(context)
+                    .pushReplacementNamed(LandingPage.routeName);
+              })
+        ],
       ),
-      drawer: SideDrawer(),
+      // drawer: SideDrawer(),
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 650),
@@ -46,8 +88,12 @@ class TodoHome extends HookWidget {
                   ),
                 ),
                 onSubmitted: (value) {
-                  context.read(todoListProvider).add(value);
+                  String id = todo.incrementID();
+                  context.read(todoListProvider).add(value, id);
+                  //Todo: add addGoal
+                  //RepositoryServiceTodoGoals.addTodoGoal(value);
                   newTodoController.clear();
+
                   print("submitted ${value}");
                 },
               ),
@@ -69,15 +115,13 @@ class TodoHome extends HookWidget {
                         color: Theme.of(context).accentColor,
                         child: TodoItem(todos[i]),
                       ),
-                      // onDismissed: (_) {
-                      //   context.read(todoListProvider).remove(todos[i]);
-                      // },
                       confirmDismiss: (dir) async {
                         final result = await showDialog(
                           context: context,
                           builder: (_) => AlertBox(),
                         );
                         context.read(todoListProvider).remove(todos[i]);
+                        RepositoryServiceTodoGoals.deleteTodoGoal(todos[i]);
                         print(result);
                         return result;
                       },
@@ -120,6 +164,8 @@ class Title extends StatelessWidget {
             fontSize: _size,
             fontWeight: FontWeight.w500,
             color: Colors.green,
+            fontFamily: "Syne",
+            letterSpacing: 1.5,
           ),
         ),
         Icon(
@@ -161,6 +207,9 @@ class TodoItem extends HookWidget {
                     id: todo.id,
                     description: textEditingController.text,
                   );
+              Todo updatedTodo =
+                  Todo(id: todo.id, description: textEditingController.text);
+              RepositoryServiceTodoGoals.updateTodoGoal(updatedTodo);
             }
           },
           child: Container(

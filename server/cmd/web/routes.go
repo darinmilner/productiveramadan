@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/darinmilner/productiveapp/pkg/config"
-	"github.com/darinmilner/productiveapp/pkg/handlers"
+	"github.com/darinmilner/productiveapp/internal/config"
+	"github.com/darinmilner/productiveapp/internal/handlers"
 	"github.com/go-chi/chi"
 )
 
@@ -20,6 +20,8 @@ func routes(app *config.AppConfig) http.Handler {
 	mux.Get("/about", handlers.Repo.About)
 	mux.Get("/hadiths", hadithHandler.GetHadith)
 	mux.Get("/ayahs", ayahHandler.GetAyahs)
+	mux.Get("/hadiths/{id}", hadithHandler.GetHadith)
+	mux.Get("/ayahs/{id}", ayahHandler.GetAyahs)
 
 	fileServer := http.FileServer(http.Dir("./static/"))
 

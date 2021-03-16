@@ -8,19 +8,23 @@ class Button {
     Function onPressedFunc,
   ) {
     return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        primary: primaryColor, // background
-        onPrimary: textColor, // foreground
-        textStyle: TextStyle(fontSize: 15.0),
-        shadowColor: Colors.green[800],
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(primaryColor),
+        foregroundColor: MaterialStateProperty.all(textColor),
       ),
+      // style: ElevatedButton.styleFrom(
+      //   primary: primaryColor, // background
+      //   onPrimary: textColor, // foreground
+      // ),
       autofocus: true,
       onPressed: onPressedFunc,
       child: Text(
         text,
         style: TextStyle(
-          fontSize: 16.0,
+          fontSize: 18.0,
           fontWeight: FontWeight.w800,
+          fontFamily: "Syne",
+          letterSpacing: 1.4,
         ),
       ),
     );

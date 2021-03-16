@@ -24,6 +24,9 @@ final TextStyle kLandingPageTextStyle = TextStyle(
   fontSize: 25.0,
   fontWeight: FontWeight.bold,
   color: kLightGray,
+  fontFamily: "Syne",
+  fontStyle: FontStyle.italic,
+  letterSpacing: 2,
 );
 
 final LinearGradient kBackgroundGreenGradient = LinearGradient(

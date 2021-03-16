@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:html_character_entities/html_character_entities.dart';
 import 'package:productive_ramadan_app/controllers/task_controller.dart';
 import 'package:productive_ramadan_app/controllers/task_state.dart';
 import 'package:productive_ramadan_app/models/daily_tasks_model.dart';
+import 'package:productive_ramadan_app/models/dailytasks_score_model.dart';
 import 'package:productive_ramadan_app/models/failure_model.dart';
 import 'package:productive_ramadan_app/repositories/dailytask_repository.dart';
+import 'package:productive_ramadan_app/repositories/sharedpreferences.dart';
+import 'package:productive_ramadan_app/utils/appbar.dart';
 import 'package:productive_ramadan_app/utils/buttons/button.dart';
 import 'dart:core';
 
 import 'package:productive_ramadan_app/utils/constants.dart';
 import 'package:productive_ramadan_app/utils/task_app_error.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'answer_card.dart';
 import 'utils/side_drawer.dart';
@@ -27,6 +32,7 @@ Button button = Button();
 class DailyTasksTracker extends HookWidget {
   static const String routeName = "/tasktracker";
 
+  MyAppBar _appBar = MyAppBar();
   @override
   Widget build(BuildContext context) {
     final taskQuestions = useProvider(taskTrackerProvider);
@@ -42,14 +48,7 @@ class DailyTasksTracker extends HookWidget {
       ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          title: Center(
-            child: Text(
-              "Productive Ramadan",
-              style: TextStyle(fontSize: 25.0),
-            ),
-          ),
-        ),
+        appBar: _appBar.buildAppBar(context),
         drawer: SideDrawer(),
         body: taskQuestions.when(
           data: (questions) => _buildBody(context, pageController, questions),
@@ -64,22 +63,26 @@ class DailyTasksTracker extends HookWidget {
           data: (tasks) {
             final taskState = useProvider(taskControllerProvider.state);
             if (!taskState.answered) return const SizedBox.shrink();
-            return button.buildButton(
-                kDarkTeal,
-                Colors.white,
-                pageController.page.toInt() + 1 < tasks.length
-                    ? "Next Task"
-                    : "See Results",
-                //submitTask,
-                () {
-              context
-                  .read(taskControllerProvider)
-                  .nextTask(tasks, pageController.page.toInt());
-              pageController.nextPage(
-                duration: const Duration(microseconds: 250),
-                curve: Curves.linear,
-              );
-            });
+
+            print(pageController.page.toString());
+            return Container(
+              height: 60.0,
+              width: MediaQuery.of(context).size.width,
+              child: button.buildButton(
+                  kDarkTeal,
+                  Colors.white,
+                  pageController.page.toInt() + 1 < tasks.length
+                      ? "Next Task"
+                      : "See Results", () {
+                context
+                    .read(taskControllerProvider)
+                    .nextTask(tasks, pageController.page.toInt());
+                pageController.nextPage(
+                  duration: const Duration(microseconds: 250),
+                  curve: Curves.linear,
+                );
+              }),
+            );
           },
           orElse: () => SizedBox.shrink(),
         ),
@@ -107,20 +110,54 @@ Widget _buildBody(
 class TaskResults extends StatelessWidget {
   final TaskState state;
   final List<DailyTaskModel> tasks;
+  bool isLoading = true;
   static int day = 1;
   TaskResults({Key key, @required this.state, @required this.tasks})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    double score = state.correct.length / tasks.length;
-    void _startNextDayTaskTracker() {
+    String score =
+        state.correct.length.toString() + "/" + tasks.length.toString();
+
+    print(state.incorrect.asMap());
+
+    // displayIncorrect() {
+    //   return ListView.builder(itemBuilder: (context, index) => state.incorrect[index]);
+    // }
+    //List<DailyTasksScore> _dailyScores;
+
+    // _saveScoreToSharedPrefs(List<String> newScore) async {
+    //   await SharedPrefs.setNewDailyScore(newScore);
+    // }
+
+    void _startNextDayTaskTracker() async {
       context.refresh(taskRepositoryProvider);
       context.read(taskControllerProvider).reset();
-      print("Score $score");
+
       day++;
+      print("day after ++ $day");
+      print("Day before shared prefs $day");
+      SharedPrefs.setDay(day);
+      if (day >= 29) {
+        day = 29;
+      }
     }
 
+    getDay() {
+      int newDay = SharedPrefs.getDay();
+      if (isLoading) {
+        newDay++;
+        isLoading = false;
+      }
+      // print("New Day from Shared Prefs $newDay");
+      return newDay;
+    }
+
+    int newDay = getDay();
+    var stringDay = newDay.toString();
+
+    print("New day from shared Prefs $stringDay");
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -146,8 +183,18 @@ class TaskResults extends StatelessWidget {
         const SizedBox(
           height: 40.0,
         ),
-        button.buildButton(kDarkTeal, Colors.amberAccent, "Day ${day} Tasks",
-            _startNextDayTaskTracker),
+        Container(
+          height: 60.0,
+          width: MediaQuery.of(context).size.width * 0.6,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              button.buildButton(kDarkTeal, Colors.amberAccent,
+                  "Day ${newDay + 1} Tasks", _startNextDayTaskTracker),
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -179,9 +226,10 @@ class TaskQuestions extends StatelessWidget {
             Text(
               "Question ${index + 1} of ${tasks.length}",
               style: TextStyle(
-                color: Colors.white,
+                color: Colors.white70,
                 fontWeight: FontWeight.bold,
-                fontSize: 24.0,
+                fontSize: 28.0,
+                fontStyle: FontStyle.italic,
               ),
             ),
             Padding(
@@ -191,7 +239,9 @@ class TaskQuestions extends StatelessWidget {
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
-                  fontSize: 24.0,
+                  fontSize: 28.0,
+                  fontFamily: "Syne",
+                  letterSpacing: 1.5,
                 ),
               ),
             ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:productive_ramadan_app/quiz_brain.dart';
+import 'package:productive_ramadan_app/utils/appbar.dart';
 
 import 'package:productive_ramadan_app/utils/constants.dart';
 import 'package:productive_ramadan_app/utils/buttons/glowing_button.dart';
@@ -13,17 +14,11 @@ int score = 0;
 class Quiz extends StatelessWidget {
   static const quizPageRoute = "/quizpage";
 
+  MyAppBar _appBar = MyAppBar();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Center(
-          child: Text(
-            "Productive Ramadan",
-            style: TextStyle(fontSize: 25.0, color: Colors.amber),
-          ),
-        ),
-      ),
+      appBar: _appBar.buildAppBar(context),
       drawer: SideDrawer(),
       body: SafeArea(
         child: Padding(

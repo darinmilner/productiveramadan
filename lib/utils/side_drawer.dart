@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:productive_ramadan_app/islamic_quiz.dart';
 import 'package:productive_ramadan_app/todo_goals.dart';
 
+import '../ayah_aday_page.dart';
 import '../daily_tasks.dart';
 import '../hadith_aday.dart';
 import 'constants.dart';
@@ -19,7 +20,7 @@ class SideDrawer extends StatelessWidget {
               child: Text(
                 "PRODUCTIVE RAMADAN",
                 style: TextStyle(
-                  fontSize: 35.0,
+                  fontSize: 30.0,
                   fontWeight: FontWeight.w800,
                   color: Colors.black54,
                   letterSpacing: 1.3,
@@ -49,7 +50,7 @@ class SideDrawer extends StatelessWidget {
           ),
           ListTile(
             onTap: () {
-              Navigator.of(context).pushNamed(HadithADay.routeName);
+              Navigator.of(context).pushReplacementNamed(HadithADay.routeName);
             },
             leading: Icon(
               FontAwesomeIcons.book,
@@ -73,6 +74,22 @@ class SideDrawer extends StatelessWidget {
             ),
             title: Text(
               "QUIZ GAME",
+              style: TextStyle(
+                fontSize: 25.0,
+                color: kGreenishTeal,
+              ),
+            ),
+          ),
+          ListTile(
+            onTap: () {
+              Navigator.of(context).pushReplacementNamed(AyahADay.routeName);
+            },
+            leading: Icon(
+              FontAwesomeIcons.readme,
+              color: kGreenishTeal,
+            ),
+            title: Text(
+              "AYAH A DAY",
               style: TextStyle(
                 fontSize: 25.0,
                 color: kGreenishTeal,

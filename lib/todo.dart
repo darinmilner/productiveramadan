@@ -1,16 +1,38 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:productive_ramadan_app/controllers/database_helper.dart';
+import 'package:productive_ramadan_app/repositories/todo_goals_repository.dart';
 import 'package:uuid/uuid.dart';
 import 'package:state_notifier/state_notifier.dart';
 
 var _uuid = Uuid();
 
 class Todo {
-  final String id;
-  final String description;
-  final bool completed;
-  Todo({this.description, this.completed = false, String id})
+  String id;
+  String description;
+  bool completed;
+  bool isDeleted;
+  int newId = 0;
+
+  Todo({this.description, this.completed = false, this.isDeleted = false, id})
       : id = id ?? _uuid.v4();
+
+  Todo.fromJson(Map<String, dynamic> json) {
+    this.id = json[DatabaseHelper.id].toString();
+    this.description = json[DatabaseHelper.columName];
+    this.completed = json[DatabaseHelper.isComplete] == 1;
+    this.isDeleted = json[DatabaseHelper.isDeleted] == 1;
+  }
+
+  String incrementID() {
+    var rand = new Random();
+    newId = rand.nextInt(100000);
+    String id = newId.toString();
+    print("new todo goal id: $id");
+    return id;
+  }
 
   @override
   String toString() {
@@ -21,11 +43,16 @@ class Todo {
 class TodoList extends StateNotifier<List<Todo>> {
   TodoList([List<Todo> initialTodoState]) : super(initialTodoState ?? []);
 
-  void add(String description) {
+  Todo todo = Todo();
+  void add(String description, String id) {
+    //id = todo.incrementID();
     state = [
       ...state,
-      Todo(description: description),
+      Todo(description: description, id: id),
     ];
+    RepositoryServiceTodoGoals.addTodoGoal(
+      Todo(description: description, id: id),
+    );
   }
 
   void toggle(String id) {
@@ -57,19 +84,37 @@ class TodoList extends StateNotifier<List<Todo>> {
   }
 
   void remove(Todo target) {
-    state = state.where((todo) => todo.id != target.id).toList();
+    state = state.where((todo) {
+      return todo.id != target.id;
+    }).toList();
   }
 }
+
+final getTodosFromDB = FutureProvider.autoDispose((ref) async {
+  RepositoryServiceTodoGoals _repositoryServiceTodoGoals =
+      RepositoryServiceTodoGoals();
+
+  var tasks = await _repositoryServiceTodoGoals.getAllTodoGoals();
+  print("TodoList tasks from db $tasks");
+  // for (int i = 0; i < tasks.length; i++) {
+  //   return TodoList([
+  //     Todo(
+  //       description: tasks[i].description,
+  //     ),
+  //   ]);
+  // }
+  return tasks;
+});
 
 //Can move to own file--global variable
 final todoListProvider = StateNotifierProvider<TodoList>((ref) {
   return TodoList([
-    Todo(
-        id: "todo-0",
-        description:
-            "قُلْ هُوَ اللّٰهُ اَحَدٌۚ - Recite Quran 20 minutes everyday"),
-    Todo(id: "todo-1", description: "Suhor and Iftar with family and friends"),
-    Todo(id: "todo-2", description: "Listen to Islamic dars or short halaqah"),
+    // Todo(
+    //   id: "100000",
+    //   description: "Recite Quran 20 minutes everyday",
+    // ),
+    // Todo(id: "100001", description: "Suhor and Iftar with family and friends"),
+    // Todo(id: "100002", description: "Listen to Islamic dars or short halaqah"),
   ]);
 });
 

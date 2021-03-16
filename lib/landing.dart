@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:productive_ramadan_app/ayah_aday_page.dart';
 import 'package:productive_ramadan_app/daily_tasks.dart';
 import 'package:productive_ramadan_app/hadith_aday.dart';
 import 'package:productive_ramadan_app/islamic_quiz.dart';
 import 'package:productive_ramadan_app/login_page.dart';
 import 'package:productive_ramadan_app/todo_goals.dart';
+import 'package:productive_ramadan_app/utils/appbar.dart';
 import 'package:productive_ramadan_app/utils/buttons/button.dart';
 import 'package:productive_ramadan_app/utils/constants.dart';
 import 'package:productive_ramadan_app/utils/side_drawer.dart';
 
+//TODO: Localization and SQLlite3
 class LandingPage extends StatelessWidget {
   Button button = Button();
+  static const String routeName = "/";
 
   void goToAboutRamadan() {
     print("About Ramadan");
@@ -35,7 +39,10 @@ class LandingPage extends StatelessWidget {
 
     void goToDailyHadith() {
       Navigator.of(context).pushNamed(HadithADay.routeName);
-      print("Daily tasks BTN");
+    }
+
+    void goToDailyAyahs() {
+      Navigator.of(context).pushNamed(AyahADay.routeName);
     }
 
     void goToLogin() {
@@ -43,15 +50,9 @@ class LandingPage extends StatelessWidget {
       print("Login BTN");
     }
 
+    MyAppBar _appBar = MyAppBar();
     return Scaffold(
-      appBar: AppBar(
-        title: Center(
-          child: Text(
-            "Productive Ramadan",
-            style: TextStyle(fontSize: 25.0, color: Colors.amberAccent),
-          ),
-        ),
-      ),
+      appBar: _appBar.buildAppBar(context),
       drawer: SideDrawer(),
       body: SafeArea(
         child: Center(
@@ -67,14 +68,16 @@ class LandingPage extends StatelessWidget {
                     "Ramadan has come again Alhamdulillah",
                     style: TextStyle(
                       color: Colors.greenAccent,
-                      fontSize: 30,
+                      fontSize: 35,
                       fontWeight: FontWeight.bold,
+                      fontFamily: "Syne",
+                      letterSpacing: 1.5,
                     ),
                     textAlign: TextAlign.center,
                   ),
                 ),
                 Divider(
-                  height: 35.0,
+                  height: 20.0,
                 ),
                 Center(
                   child: Text(
@@ -87,7 +90,7 @@ class LandingPage extends StatelessWidget {
                   ),
                 ),
                 Divider(
-                  height: 35.0,
+                  height: 20.0,
                 ),
                 button.buildButton(Colors.red, Colors.white70,
                     "Daily Ramadan Tasks", goToDailyTasks),
@@ -114,8 +117,8 @@ class LandingPage extends StatelessWidget {
                 Divider(
                   height: 15.0,
                 ),
-                button.buildButton(
-                    kDarkPurple, Colors.white54, "Login", goToLogin),
+                button.buildButton(kDarkPurple, Colors.white54,
+                    "Ayah of the day", goToDailyAyahs),
                 // GlowingButton(
                 //   color1: kDarkPurple,
                 //   color2: kDarkPink,

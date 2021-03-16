@@ -2,11 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:productive_ramadan_app/landing.dart';
-import 'package:productive_ramadan_app/todo.dart';
+import 'package:productive_ramadan_app/repositories/sharedpreferences.dart';
+import 'package:productive_ramadan_app/splash_screen.dart';
 import 'package:productive_ramadan_app/utils/page_router.dart';
-import 'package:productive_ramadan_app/utils/toolbar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+enum appState { isLoading, loaded }
+var appStarted;
+void main() async {
+  appStarted = appState.isLoading;
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await sharedPrefs.init();
+
+  appStarted = appState.loaded;
   runApp(
     ProviderScope(child: MyApp()),
   );
@@ -26,7 +35,7 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.dark,
       ),
       //home: TodoHome(),
-      home: LandingPage(),
+      home: appStarted == appState.isLoading ? SplashScreen() : LandingPage(),
       onGenerateRoute: PageRouter.generateRoute,
     );
   }

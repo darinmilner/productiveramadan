@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:productive_ramadan_app/ramadan_dailytasks_tracker.dart';
+import 'package:productive_ramadan_app/utils/appbar.dart';
 import 'package:productive_ramadan_app/utils/constants.dart';
 
 const Color teal = Colors.teal;
@@ -17,91 +18,92 @@ class DailyTasks extends StatelessWidget {
       Navigator.of(context).pushNamed(DailyTasksTracker.routeName);
     }
 
+    MyAppBar _appBar = MyAppBar();
     return Scaffold(
-      appBar: AppBar(
-        title: Center(
-          child: Text(
-            "Productive Ramadan",
-            style: TextStyle(fontSize: 25.0),
-          ),
-        ),
-      ),
-      body: Center(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 10.0),
-              child: Text(
-                "DAILY RAMADAN TASKS PAGE",
+      appBar: _appBar.buildAppBar(context),
+      body: Container(
+        child: Center(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: Text(
+                  "DAILY RAMADAN TASKS PAGE",
+                  style: TextStyle(
+                    fontSize: 22.0,
+                    fontFamily: 'Syne',
+                    letterSpacing: 1.5,
+                  ),
+                ),
+              ),
+              SizedBox(height: 10.0),
+              Text(
+                "Click below to track daily progress",
                 style: TextStyle(
-                  fontSize: 22.0,
+                  fontSize: 18.0,
+                  fontFamily: 'Syne',
+                  letterSpacing: 1.5,
                 ),
               ),
-            ),
-            SizedBox(height: 10.0),
-            Text(
-              "Click below to track daily progress",
-              style: TextStyle(
-                fontSize: 18.0,
+              Expanded(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: ReusableCard(
+                        color: teal,
+                        text:
+                            "Five daily salat, extra sunnah salat and tarawih",
+                      ),
+                    ),
+                    Expanded(
+                      child: ReusableCard(
+                        color: Colors.tealAccent[200],
+                        text: "Read Quran 20 minutes or more",
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Expanded(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: ReusableCard(
-                      color: teal,
-                      text: "Five daily salat, extra sunnah salat and tarawih",
-                    ),
-                  ),
-                  Expanded(
-                    child: ReusableCard(
-                      color: Colors.tealAccent[200],
-                      text: "Read Quran 20 minutes or more",
-                    ),
-                  ),
-                ],
+              SizedBox(
+                height: 10.0,
               ),
-            ),
-            SizedBox(
-              height: 10.0,
-            ),
-            Expanded(
-              child: Row(
-                children: [
-                  Expanded(
-                    child: ReusableCard(
-                      color: Colors.tealAccent[200],
-                      text: "Fast everyday of Ramaan",
+              Expanded(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: ReusableCard(
+                        color: Colors.tealAccent[200],
+                        text: "Fast everyday of Ramaan",
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    child: ReusableCard(
-                      color: Colors.tealAccent[200],
-                      text: "Do extra good deeds",
+                    Expanded(
+                      child: ReusableCard(
+                        color: Colors.tealAccent[200],
+                        text: "Do extra good deeds",
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            GestureDetector(
-              onTap: saveDailyProgress,
-              child: Container(
-                color: teal,
-                height: bottomContainerHeight,
-                width: double.infinity,
-                child: Center(
-                  child: Text(
-                    "SAVE DAILY PROGRESS",
-                    style: kLandingPageTextStyle,
-                    textAlign: TextAlign.center,
+              GestureDetector(
+                onTap: saveDailyProgress,
+                child: Container(
+                  color: teal,
+                  height: bottomContainerHeight,
+                  width: double.infinity,
+                  child: Center(
+                    child: Text(
+                      "SAVE DAILY PROGRESS",
+                      style: kLandingPageTextStyle,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       // floatingActionButton: Theme(
@@ -131,6 +133,7 @@ class ReusableCard extends StatelessWidget {
             child: Text(
               text,
               style: kLandingPageTextStyle,
+              textAlign: TextAlign.center,
             ),
           ),
         ],

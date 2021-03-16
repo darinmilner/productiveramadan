@@ -3,8 +3,8 @@ import 'package:productive_ramadan_app/question.dart';
 class QuizBrain {
   int _questionNumber = 0;
   List<Question> _quizQuestions = [
-    Question(q: "There are 115 surahs in the Quran", a: false),
-    Question(q: "Ayatul Kursi is Surah Baqarah :255", a: true),
+    Question(q: "There are 115 surahs in the Quran.", a: false),
+    Question(q: "Ayatul Kursi is Surah Baqarah :255.", a: true),
     Question(q: "Surah Iklas describes the uniqueness of Allah", a: true),
     Question(q: "Surah AlFatiha is the last surah ", a: false),
     Question(
@@ -13,6 +13,10 @@ class QuizBrain {
     Question(q: "Surah Alimran is the longest surah in the Quran", a: false),
     Question(q: "Surah AlKawthar is the shortest surah in the Quran", a: true),
     Question(q: "The Quran is the most memorized book in the world", a: true),
+    Question(
+        q: "Fasting during the few days right before Ramadan is recommended for Muslims",
+        a: false),
+    Question(q: "Juz Amma is the last juz of the Quran.", a: true),
   ];
 
   void nextQuestion() {
