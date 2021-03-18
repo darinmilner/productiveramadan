@@ -12,9 +12,28 @@ main {
   justify-content: center;
 }
 
-.ulLinks {
+
+ul li {
   list-style-type: none;
   list-style: none;
+}
+.imgLinks {
+  list-style-type: none;
+  list-style: none;
+  
+}
+
+.imgLinks li {
+  margin-top: 20px !important;
+ 
+}
+
+.fontColor {
+  color: wheat;
+}
+
+.signup-form {
+  size: 50%;
 }
 
 li a {
@@ -28,6 +47,11 @@ h1 {
 li a::after {
   color: yellow;
 }
+
+.navcolor {
+  color: teal;
+}
+
 
 .glass {
   background: white;

@@ -67,7 +67,6 @@ class DailyTaskRepository extends BaseDailyTaskRepository {
         "isComplete": false,
         "allPossibleAnswers": [
           "Five Fardh Salat only,",
-          // " Five Fardh Salat, extra rakaats of sunnah salat and tarawih.",
           "Five Fardh Salat and extra rakaats of sunnah salat but no tarawih.",
           "Did not complete five Fardh Salat.",
         ],
@@ -81,7 +80,6 @@ class DailyTaskRepository extends BaseDailyTaskRepository {
           "Did not read Quran today",
           "Less than 10 minutes",
           "10 to 20minutes",
-          // "More than 20 minutes",
         ],
       },
       {
@@ -92,21 +90,16 @@ class DailyTaskRepository extends BaseDailyTaskRepository {
         "allPossibleAnswers": [
           "Did not fast today",
           "Started to fast but broke it early",
-          //  "I completed my fast",
-          "Did not fast but have excuse, will make it up after Ramadan",
+          "Did not fast but have an excuse, I will make it up after Ramadan",
         ],
       },
       {
-        "task": "What did you do today?",
-        "correctTaskAnswer": "Gave sadaqah",
-        //   "helped a friend or family member",
-        //   "Attended or listened to an Islamic lecture/halaqah"
-        // ],
+        "task": "What extra task did you do today?",
+        "correctTaskAnswer": "Gave sadaqah or helped someone",
         "dayNumber": 1,
         "isComplete": false,
         "allPossibleAnswers": [
           "Fought with family members",
-          // "Gave sadaqah or helped someone",
           "Slept all day",
           "Listened to music",
         ],

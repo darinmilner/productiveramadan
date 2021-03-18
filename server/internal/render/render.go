@@ -2,6 +2,7 @@ package render
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"html/template"
 	"log"
@@ -10,13 +11,13 @@ import (
 
 	"github.com/darinmilner/productiveapp/internal/config"
 	"github.com/darinmilner/productiveapp/internal/models"
+	"github.com/justinas/nosurf"
 )
 
 var functions = template.FuncMap{}
 
 var app *config.AppConfig
-
-const pathToTemplates = "./templates"
+var pathToTemplates = "./templates"
 
 //NewTemplates set the config of the template pkg
 func NewTemplates(a *config.AppConfig) {
@@ -24,12 +25,17 @@ func NewTemplates(a *config.AppConfig) {
 }
 
 //AddDefaultData adds data
-func AddDefaultData(td *models.TemplateData) *models.TemplateData {
+func AddDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateData {
+	td.FlashMsg = app.Session.PopString(r.Context(), "flash")
+	td.Warning = app.Session.PopString(r.Context(), "warning")
+	td.Error = app.Session.PopString(r.Context(), "error")
+	td.CSRFToken = nosurf.Token(r)
+
 	return td
 }
 
 //RenderTemplates function
-func RenderTemplates(w http.ResponseWriter, tmpl string, td *models.TemplateData) {
+func RenderTemplates(w http.ResponseWriter, r *http.Request, tmpl string, td *models.TemplateData) error {
 	var tc map[string]*template.Template
 
 	if app.UseCache {
@@ -41,18 +47,21 @@ func RenderTemplates(w http.ResponseWriter, tmpl string, td *models.TemplateData
 
 	t, ok := tc[tmpl]
 	if !ok {
-		log.Fatal("Could not get template from the cache")
+		return errors.New("Could not get template from the cache")
 	}
 
 	buf := new(bytes.Buffer)
 
-	td = AddDefaultData(td)
+	td = AddDefaultData(td, r)
 	_ = t.Execute(buf, td)
 
 	_, err := buf.WriteTo(w)
 	if err != nil {
 		log.Println("error writing template to browser", err)
+		return err
 	}
+
+	return nil
 
 }
 

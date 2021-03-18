@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:productive_ramadan_app/controllers/ayah_service.dart';
 
 import 'package:productive_ramadan_app/models/api_response.dart';
-import 'package:productive_ramadan_app/models/hadith_model.dart';
 import 'package:productive_ramadan_app/one_ayah_view.dart';
 import 'package:productive_ramadan_app/repositories/sharedpreferences.dart';
+import 'package:productive_ramadan_app/utils/appbar.dart';
 import 'package:productive_ramadan_app/utils/buttons/button.dart';
 import 'package:productive_ramadan_app/utils/constants.dart';
 
@@ -34,6 +34,7 @@ class _AyahADayState extends State<AyahADay> {
   initState() {
     super.initState();
     dayNumber = SharedPrefs.getAyahDay();
+    print("Ayah daynmber $dayNumber");
   }
 
   getOneAyah(int day) async {
@@ -42,7 +43,7 @@ class _AyahADayState extends State<AyahADay> {
 
     dayNumber++;
     print("Day number " + dayNumber.toString());
-    SharedPrefs.setHadithDay(dayNumber);
+    SharedPrefs.setAyahDay(dayNumber);
     if (dayNumber >= _apiResponse.data.length) {
       dayNumber = _apiResponse.data.length;
     }
@@ -77,17 +78,11 @@ class _AyahADayState extends State<AyahADay> {
     }
   }
 
+  MyAppBar _appBar = MyAppBar();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Center(
-          child: Text(
-            "Productive Ramadan",
-            style: kLandingPageTextStyle,
-          ),
-        ),
-      ),
+      appBar: _appBar.buildAppBar(context),
       drawer: SideDrawer(),
       body: _apiResponse.data == null
           ? Center(
@@ -137,6 +132,7 @@ class _AyahADayState extends State<AyahADay> {
                                     "Get Ayah ${dayNumber}",
                                     () {
                                       setState(() {
+                                        print("Day number value $dayNumber");
                                         Navigator.of(context).pushNamed(
                                             OneAyahView.routeName,
                                             arguments: {
@@ -179,33 +175,14 @@ class _AyahADayState extends State<AyahADay> {
                     return Center(
                       child: Column(
                         children: [
-                          // button.buildButton(
-                          //   kDarkTeal,
-                          //   Colors.yellow,
-                          //   "Get Ayah ${dayNumber}",
-                          //   getAyahs,
-                          // ),
                           Divider(
                             height: 10.0,
                           ),
-                          // _isLoading
-                          //     ? CircularProgressIndicator()
-                          //     :
-
                           Text("${_apiResponse.data[index].day}"),
-                          // Text(
-                          //   "Hadith ${hadiths[dayNumber]}",
-                          //   style: kLandingPageTextStyle,
-                          // ),
                           Divider(
                             height: 10.0,
                           ),
-
                           Text("${_apiResponse.data[index].text}"),
-                          // Text(
-                          //   "${hadiths[dayNumber]}",
-                          //   style: kLandingPageTextStyle,
-                          // ),
                           Divider(
                             height: 10.0,
                           ),
@@ -222,15 +199,4 @@ class _AyahADayState extends State<AyahADay> {
     );
   }
 }
-// Text(
-//   "Back To Home",
-//   style: kLandingPageTextStyle,
-// ),
-// button.buildButton(
-//   kDarkTeal,
-//   Colors.yellow,
-//   "Go Back",
-//   () {
-//     Navigator.pop(context);
-//   },
-// ),
+

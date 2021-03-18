@@ -17,6 +17,7 @@ class QuizBrain {
         q: "Fasting during the few days right before Ramadan is recommended for Muslims",
         a: false),
     Question(q: "Juz Amma is the last juz of the Quran.", a: true),
+    Question(q: "Muslims fast in Ramadan from sunrise to sunset.", a: false),
   ];
 
   void nextQuestion() {

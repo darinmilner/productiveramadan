@@ -11,6 +11,7 @@ import (
 	"sync"
 
 	"github.com/darinmilner/productiveapp/internal/config"
+	"github.com/darinmilner/productiveapp/internal/forms"
 	"github.com/darinmilner/productiveapp/internal/models"
 	"github.com/darinmilner/productiveapp/internal/render"
 )
@@ -37,12 +38,91 @@ func NewHandlers(r *Repository) {
 
 //Home page function
 func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplates(w, "home.page.html", &models.TemplateData{})
+	remoteIP := r.RemoteAddr
+	m.App.Session.Put(r.Context(), "remoteIP", remoteIP)
+	render.RenderTemplates(w, r, "home.page.html", &models.TemplateData{})
 }
 
 //About page function
 func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplates(w, "about.page.html", &models.TemplateData{})
+	//perform some logic
+	stringMap := make(map[string]string)
+	remoteIP := m.App.Session.GetString(r.Context(), "remoteIP")
+
+	stringMap["remoteIP"] = remoteIP
+
+	render.RenderTemplates(w, r, "about.page.html", &models.TemplateData{})
+}
+
+//About page function
+func (m *Repository) SignupSuccess(w http.ResponseWriter, r *http.Request) {
+	signup, ok := m.App.Session.Get(r.Context(), "signup").(models.Signup)
+	if !ok {
+		fmt.Println("Could not get signup model from the session")
+		m.App.Session.Put(r.Context(), "error", "Could not get signup from context")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
+	m.App.Session.Remove(r.Context(), "signup")
+	data := make(map[string]interface{})
+	data["signup"] = signup
+	render.RenderTemplates(w, r, "signup-success.page.html", &models.TemplateData{
+		Data: data,
+	})
+}
+
+//Signup page function
+func (m *Repository) Signup(w http.ResponseWriter, r *http.Request) {
+	var emptySignupForm models.Signup
+
+	data := make(map[string]interface{})
+	data["signup"] = emptySignupForm
+
+	render.RenderTemplates(w, r, "signup.page.html", &models.TemplateData{
+		Form: forms.New(nil),
+		Data: data,
+	})
+}
+
+func (m *Repository) PostSignUp(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	signup := models.Signup{
+		FirstName: r.Form.Get("first-name"),
+		LastName:  r.Form.Get("last-name"),
+		Email:     r.Form.Get("email"),
+	}
+
+	form := forms.New(r.PostForm)
+
+	form.Required("first-name", "last-name", "email")
+
+	form.MinLength("first-name", 3, r)
+
+	form.MinLength("last-name", 3, r)
+
+	form.IsEmail("email")
+
+	if !form.Valid() {
+		data := make(map[string]interface{})
+		data["signup"] = signup
+		render.RenderTemplates(w, r, "signup.page.html", &models.TemplateData{
+			Form: form,
+			Data: data,
+		})
+		return
+
+	}
+
+	//Add session
+	m.App.Session.Put(r.Context(), "signup", signup)
+
+	http.Redirect(w, r, "/signup-success", http.StatusSeeOther)
 }
 
 //Hadith defines the hadith structure
@@ -171,11 +251,17 @@ func NewAyahHandlers() *ayahHandlers {
 			Ayah{12, "Al-Insaan, Chapter #76:29&30 \n29. Verily, this (Verse of the Qur'an) is an admonition, so whosoever wills, let him take a Path to his Lord (Allah). \n30. But you cannot will it, unless Allah wills it. Verily, Allah is Ever All-Knowing, All-Wise. \nAnd verily, this (qur'an) is a Reminder for the Muttaqun (the pious. See V.2:2) \n(سورة الحاقة, Al-Haaqqa, Chapter #69, Verse #48)"},
 			Ayah{13, "And verily, this (qur'an) is a Reminder for the Muttaqun (the pious. See V.2:2).\n(سورة الحاقة, Al-Haaqqa, Chapter #69, Verse #48)"},
 			Ayah{14, "Al-Muzzammil 73:1-4 \nBismi Allahi alrrahmani alrraheemi \n1. O you wrapped in garments (i.e. Prophet Muhammad صلى الله عليه وسلم)! \n2. Stand (to pray) all night, except a little - \n3. Half of it or a little less than that, \n4. Or a little more. And recite the Qur'an (aloud) in a slow, (pleasant tone and) style."},
-			Ayah{15, "Ayah 7"},
-			Ayah{16, "Ayah 7"},
-			Ayah{17, "Ayah 7"},
-			Ayah{18, "Ayah 7"},
-			Ayah{19, "Ayah 7"},
+			Ayah{15, "Say (O Muhammad صلى الله عليه وسلم to mankind): \"If you (really) love Allah then follow me (i.e. accept Islamic Monotheism, follow the Qur’an and the Sunnah), Allah will love you and forgive you your sins. And Allah is Oft-Forgiving, Most Merciful.\"\n(سورة آل عمران, Aal-i-Imraan, Chapter #3, Verse #31)"},
+			Ayah{16, "And hold fast, all of you together, to the Rope of Allah (i.e. this Qur’an), and be not divided among yourselves , and remember Allah's Favor on you, for you were enemies one to another but He joined your hearts together, so that, by His Grace, you became brethren (in Islamic Faith), and you were on the brink of a pit of Fire, and He saved you from it. Thus, Allah makes His Ayat (proofs, evidence, verses, lessons, signs, revelations, etc.,) clear to you, that you may be guided.\n(سورة آل عمران, Aal-i-Imraan, Chapter #3, Verse #103)"},
+			Ayah{17, "This (the qur'an) is a plain statement for mankind, a guidance and instruction to those who are Al-Muttaqun (the pious).\n(سورة آل عمران, Aal-i-Imraan, Chapter #3, Verse #138)"},
+			Ayah{18, "O mankind! Verily, there has come to you a convincing proof (Prophet Muhammad صلى الله عليه وسلم) from your Lord; and We sent down to you a manifest light (this qur'an).\n(سورة النساء, An-Nisaa, Chapter #4, Verse #174)\n"},
+			Ayah{19, "And We have sent down to you (O Muhammad صلى الله عليه وسلم) the Book (this qur'an) in truth, confirming the Scripture that came before it and Muhaymin (trustworthy in highness and a witness) over it (old Scriptures) . So judge among them by what Allah has revealed, and follow not their vain desires, diverging away from the truth that has come to you. To each among you, We have prescribed a law and a clear way. If Allah had willed, He would have made you one nation, but that (He) may test you in what He has given you; so compete in good deeds. The return of you (all) is to Allah; then He will inform you about that in which you used to differ.\n(سورة المائدة, Al-Maaida, Chapter #5, Verse #48)"},
+			Ayah{20, "But no, by your Lord, they can have no faith, until they make you (o Muhammad صلى الله عليه وسلم) judge in all disputes between them, and find in themselves no resistance against your decisions, and accept (them) with full submission.\n(سورة النساء, An-Nisaa, Chapter #4, Verse #65)"},
+			Ayah{21, "Ayah 7"},
+			Ayah{22, "Ayah 7"},
+			Ayah{23, "Ayah 7"},
+			Ayah{24, "Ayah 7"},
+			Ayah{25, "Ayah 7"},
 		},
 	}
 

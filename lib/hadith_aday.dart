@@ -23,8 +23,6 @@ class _HadithADayState extends State<HadithADay> {
 
   Button button = Button();
 
-  Hadith _hadith = Hadith();
-
   HadithService _service = HadithService();
 
   MyAppBar _appBar = MyAppBar();
@@ -37,7 +35,6 @@ class _HadithADayState extends State<HadithADay> {
 
   @override
   void initState() {
-    // getHadith();
     dayNumber = SharedPrefs.getHadithDay();
     super.initState();
   }
@@ -70,13 +67,6 @@ class _HadithADayState extends State<HadithADay> {
       dayNumber++;
     });
     print("Hadith Button: day # ${dayNumber}");
-
-    //return await hadiths;
-
-    //dayNumber++;
-    // if (dayNumber >= _apiResponse.data.length) {
-    //   dayNumber = _apiResponse.data.length;
-    // }
   }
 
   @override
@@ -140,10 +130,6 @@ class _HadithADayState extends State<HadithADay> {
                                           dayNumber: dayNumber,
                                         },
                                       );
-
-                                      // setState(() {
-                                      //   getOneHadith(dayNumber);
-                                      // });
                                     },
                                   ),
                                 ],

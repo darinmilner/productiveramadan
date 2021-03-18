@@ -7,7 +7,7 @@ class SharedPrefs {
   static const _keyDay = "dayNumber";
   static const _keyHadithDay = "dayHadithNumber";
   static const _keyAyahDay = "dayAyahNumber";
-  static const _keyDailyScores = "Daily Scores";
+  static const _keyRemainingGoals = "numRemainingGoals";
   init() async {
     if (_sharedPrefs == null) {
       _sharedPrefs = await SharedPreferences.getInstance();
@@ -26,6 +26,9 @@ class SharedPrefs {
   static Future setAyahDay(int day) async =>
       await _sharedPrefs.setInt(_keyAyahDay, day);
 
+  static Future setDailyGoalRemainingAmt(int numRemaining) async =>
+      await _sharedPrefs.setInt(_keyRemainingGoals, numRemaining);
+
   static String getScore() => _sharedPrefs.getString(_keyScore) ?? "";
 
   static int getDay() => _sharedPrefs.getInt(_keyDay) ?? 1;
@@ -34,12 +37,8 @@ class SharedPrefs {
 
   static int getAyahDay() => _sharedPrefs.getInt(_keyAyahDay) ?? 1;
 
-  // static Future setNewDailyScore(List<String> newScore) async {
-  //   await _sharedPrefs.setStringList(_keyDailyScores, newScore);
-  // }
-  //
-  // static List<String> get getScoresList =>
-  //     _sharedPrefs.getStringList(_keyDailyScores) ?? "";
+  static int getRemainingGoalsAmt() =>
+      _sharedPrefs.getInt(_keyRemainingGoals) ?? 0;
 
   static String get todoGoal => _sharedPrefs.getString(kKeyTodoGoal) ?? "";
 }

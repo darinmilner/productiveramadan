@@ -20,6 +20,15 @@ final List<BoxShadow> kBoxShadow = [
   ),
 ];
 
+final TextStyle kDailyTrackerTestStyle = TextStyle(
+  color: Colors.amber,
+  fontSize: 22.0,
+  fontWeight: FontWeight.w800,
+  fontFamily: "Syne",
+  fontStyle: FontStyle.italic,
+  letterSpacing: 1.5,
+);
+
 final TextStyle kLandingPageTextStyle = TextStyle(
   fontSize: 25.0,
   fontWeight: FontWeight.bold,

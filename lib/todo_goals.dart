@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:productive_ramadan_app/repositories/sharedpreferences.dart';
 import 'package:productive_ramadan_app/repositories/todo_goals_repository.dart';
 import 'package:productive_ramadan_app/todo.dart';
 import 'package:productive_ramadan_app/utils/alertbox.dart';
@@ -17,10 +18,11 @@ class TodoHome extends HookWidget {
   ToolBar toolbar = ToolBar();
   Todo todo = Todo();
   bool pageIsLoading = true;
+  static int remainingTodoGoals;
+  static int completedTodoGoals = 0;
 
   static const routeName = "/todogoals";
 
-  MyAppBar _appBar = MyAppBar();
   @override
   Widget build(BuildContext context) {
     final newTodoController = useTextEditingController();
@@ -32,14 +34,23 @@ class TodoHome extends HookWidget {
       if (pageIsLoading) {
         final todosFromDB = useProvider(getTodosFromDB);
         print("Todos from db in widget  + $todosFromDB");
-
+        int completedTasks = 0;
         todosFromDB.when(
             data: (todo) {
               for (int i = 0; i < todo.length; i++) {
                 print(todo[i]);
                 todos.add(todo[i]);
+                if (todo[i].completed == 1) {
+                  todos[i].completed = true;
+                  completedTasks++;
+                }
+                completedTodoGoals = completedTasks;
               }
 
+              remainingTodoGoals = todo.length;
+
+              print("Remaining tasks $remainingTodoGoals");
+              print("Completed tasks $completedTodoGoals");
               pageIsLoading = false;
             },
             loading: () => CircularProgressIndicator(),
@@ -50,7 +61,6 @@ class TodoHome extends HookWidget {
     }
 
     getTodoGoalsFromDb();
-    //todos.add(Todo(description: "Work", completed: false, id: "3"));
 
     return Scaffold(
       appBar: AppBar(
@@ -64,13 +74,16 @@ class TodoHome extends HookWidget {
           IconButton(
               icon: Icon(FontAwesomeIcons.home),
               onPressed: () {
+                int filteredTodos =
+                    todos.where((todo) => !todo.completed).length;
+                SharedPrefs.setDailyGoalRemainingAmt(filteredTodos);
                 todos.clear();
+
                 Navigator.of(context)
                     .pushReplacementNamed(LandingPage.routeName);
               })
         ],
       ),
-      // drawer: SideDrawer(),
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 650),
@@ -88,10 +101,10 @@ class TodoHome extends HookWidget {
                   ),
                 ),
                 onSubmitted: (value) {
+                  ToolBar.isLoading = false;
                   String id = todo.incrementID();
                   context.read(todoListProvider).add(value, id);
-                  //Todo: add addGoal
-                  //RepositoryServiceTodoGoals.addTodoGoal(value);
+
                   newTodoController.clear();
 
                   print("submitted ${value}");
@@ -106,6 +119,7 @@ class TodoHome extends HookWidget {
               ),
               Column(
                 children: [
+                  if (todos.isEmpty) Text("Add some Ramadan todo goals"),
                   if (todos.isNotEmpty) const Divider(height: 10),
                   for (var i = 0; i < todos.length; i++) ...[
                     if (i > 0) const Divider(height: 10),
@@ -120,9 +134,9 @@ class TodoHome extends HookWidget {
                           context: context,
                           builder: (_) => AlertBox(),
                         );
+                        ToolBar.isLoading = false;
                         context.read(todoListProvider).remove(todos[i]);
                         RepositoryServiceTodoGoals.deleteTodoGoal(todos[i]);
-                        print(result);
                         return result;
                       },
                       background: Container(
@@ -150,7 +164,7 @@ class TodoHome extends HookWidget {
 class Title extends StatelessWidget {
   const Title({Key key}) : super(key: key);
   static const double _size = 25;
-  //final todos = useProvider(filteredTodos);
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -181,7 +195,6 @@ class Title extends StatelessWidget {
 class TodoItem extends HookWidget {
   TodoItem(this.todo, {Key key}) : super(key: key);
   final Todo todo;
-  // final todos = useProvider(filteredTodos);
   @override
   Widget build(BuildContext context) {
     final itemFocusNode = useFocusNode();
@@ -203,6 +216,7 @@ class TodoItem extends HookWidget {
               textEditingController.text = todo.description;
               print(textEditingController.text);
             } else {
+              ToolBar.isLoading = false;
               context.read(todoListProvider).edit(
                     id: todo.id,
                     description: textEditingController.text,
@@ -227,13 +241,18 @@ class TodoItem extends HookWidget {
                     borderRadius: BorderRadius.all(Radius.circular(10.0)),
                   ),
                   child: Checkbox(
-                    value: todo.completed,
-                    tristate: true,
-                    activeColor: Theme.of(context).accentColor,
-                    checkColor: Theme.of(context).primaryColor,
-                    onChanged: (value) =>
-                        context.read(todoListProvider).toggle(todo.id),
-                  ),
+                      value: todo.completed,
+                      tristate: true,
+                      activeColor: Theme.of(context).accentColor,
+                      checkColor: Theme.of(context).primaryColor,
+                      onChanged: (value) {
+                        ToolBar.isLoading = false;
+                        context.read(todoListProvider).toggle(todo.id);
+                        !todo.completed
+                            ? RepositoryServiceTodoGoals.completeTodoGoal(todo)
+                            : RepositoryServiceTodoGoals.uncompleteTodoGoal(
+                                todo);
+                      }),
                 ),
               ),
               title: isFocused

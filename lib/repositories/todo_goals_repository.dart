@@ -79,6 +79,34 @@ class RepositoryServiceTodoGoals {
         .databaseLog("addTodoGoal", sql, null, result, params);
   }
 
+  static Future<void> completeTodoGoal(Todo goal) async {
+    Database db = await DatabaseHelper.instance.database;
+    final sql = '''UPDATE ${DatabaseHelper.tableName}
+    SET ${DatabaseHelper.isComplete} =1
+    WHERE ${DatabaseHelper.id} = ?
+     ''';
+
+    int goalId = int.parse(goal.id);
+    List<dynamic> params = [goalId];
+    final result = await db.rawInsert(sql, params);
+    DatabaseHelper.instance
+        .databaseLog("addTodoGoal", sql, null, result, params);
+  }
+
+  static Future<void> uncompleteTodoGoal(Todo goal) async {
+    Database db = await DatabaseHelper.instance.database;
+    final sql = '''UPDATE ${DatabaseHelper.tableName}
+    SET ${DatabaseHelper.isComplete} =0
+    WHERE ${DatabaseHelper.id} = ?
+     ''';
+
+    int goalId = int.parse(goal.id);
+    List<dynamic> params = [goalId];
+    final result = await db.rawInsert(sql, params);
+    DatabaseHelper.instance
+        .databaseLog("addTodoGoal", sql, null, result, params);
+  }
+
   static Future<void> updateTodoGoal(Todo goal) async {
     Database db = await DatabaseHelper.instance.database;
     print("update Goal Func ${goal.description}");

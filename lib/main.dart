@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -15,10 +17,13 @@ void main() async {
 
   await sharedPrefs.init();
 
-  appStarted = appState.loaded;
   runApp(
     ProviderScope(child: MyApp()),
   );
+  Timer(Duration(seconds: 3), () {
+    print("App Is Showing Splash Screen");
+  });
+  appStarted = appState.loaded;
 }
 
 class MyApp extends StatelessWidget {

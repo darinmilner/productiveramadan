@@ -6,6 +6,7 @@ class GlowingButton extends HookWidget {
   final Color color2;
   final Function onPressed;
   final String text;
+  final bool icon;
 
   GlowingButton({
     Key key,
@@ -13,6 +14,7 @@ class GlowingButton extends HookWidget {
     this.color2 = Colors.teal,
     this.text,
     this.onPressed,
+    this.icon = false,
   });
 
   @override
@@ -66,13 +68,12 @@ class GlowingButton extends HookWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Icon(
-            //   Icons.check,
-            //   color: Colors.white,
-            // ),
-            Container(
-              width: MediaQuery.of(context).size.width / 10,
-            ),
+            icon
+                ? Icon(
+                    Icons.check,
+                    color: Colors.white,
+                  )
+                : Container(),
             Center(
               child: Text(
                 text,

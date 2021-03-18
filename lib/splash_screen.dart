@@ -15,11 +15,18 @@ class SplashScreen extends StatelessWidget {
             colors: [kDarkGreen, kDarkTeal],
           ),
         ),
-        child: Container(
-          margin: EdgeInsets.symmetric(horizontal: 150, vertical: 300),
-          height: MediaQuery.of(context).size.height * 0.2,
-          width: MediaQuery.of(context).size.height * 0.2,
-          child: CircularProgressIndicator(),
+        child: Column(
+          children: [
+            Image.asset(
+              "ProductiveRamadanLogo1.png",
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 150, vertical: 300),
+              height: MediaQuery.of(context).size.height * 0.2,
+              width: MediaQuery.of(context).size.height * 0.2,
+              child: CircularProgressIndicator(),
+            ),
+          ],
         ),
       ),
     );

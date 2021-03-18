@@ -1,6 +1,8 @@
+import 'package:flushbar/flushbar.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:productive_ramadan_app/controllers/task_state.dart';
 import 'package:productive_ramadan_app/models/daily_tasks_model.dart';
+import 'package:flutter/material.dart';
 
 final taskControllerProvider =
     StateNotifierProvider.autoDispose<TaskController>(
@@ -10,6 +12,7 @@ final taskControllerProvider =
 class TaskController extends StateNotifier<TaskState> {
   TaskController() : super(TaskState.initial());
 
+  int incorrect;
   void submitAnswer(DailyTaskModel currentTask, String answer) {
     if (state.answered) return;
 
@@ -26,8 +29,11 @@ class TaskController extends StateNotifier<TaskState> {
         status: TaskStatus.incorrect,
       );
     }
+    incorrect = state.incorrect.length;
+
     print(currentTask);
     print(answer);
+    print("Incorrect answers ${state.incorrect}");
   }
 
   void nextTask(List<DailyTaskModel> tasks, int currentIndex) {

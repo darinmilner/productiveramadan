@@ -84,7 +84,8 @@ class _OneHadithViewState extends State<OneHadithView> {
                   : HadithAyahCard(
                       text: text,
                       ayahHadithText: "Hadith",
-                      dayNumber: widget.dayNumber - 1),
+                      dayNumber: widget.dayNumber - 1,
+                    ),
             ],
           ),
         ),

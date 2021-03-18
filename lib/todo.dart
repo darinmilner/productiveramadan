@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:productive_ramadan_app/controllers/database_helper.dart';
 import 'package:productive_ramadan_app/repositories/todo_goals_repository.dart';
@@ -96,6 +97,7 @@ final getTodosFromDB = FutureProvider.autoDispose((ref) async {
 
   var tasks = await _repositoryServiceTodoGoals.getAllTodoGoals();
   print("TodoList tasks from db $tasks");
+
   // for (int i = 0; i < tasks.length; i++) {
   //   return TodoList([
   //     Todo(
@@ -108,14 +110,15 @@ final getTodosFromDB = FutureProvider.autoDispose((ref) async {
 
 //Can move to own file--global variable
 final todoListProvider = StateNotifierProvider<TodoList>((ref) {
-  return TodoList([
-    // Todo(
-    //   id: "100000",
-    //   description: "Recite Quran 20 minutes everyday",
-    // ),
-    // Todo(id: "100001", description: "Suhor and Iftar with family and friends"),
-    // Todo(id: "100002", description: "Listen to Islamic dars or short halaqah"),
-  ]);
+  return TodoList([]);
+  // return TodoList([
+  //   // Todo(
+  //   //   id: "100000",
+  //   //   description: "Recite Quran 20 minutes everyday",
+  //   // ),
+  //   // Todo(id: "100001", description: "Suhor and Iftar with family and friends"),
+  //   // Todo(id: "100002", description: "Listen to Islamic dars or short halaqah"),
+  // ]);
 });
 
 //Ways to filter the todos goal lists

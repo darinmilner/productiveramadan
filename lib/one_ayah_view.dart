@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:productive_ramadan_app/controllers/ayah_service.dart';
 import 'package:productive_ramadan_app/models/api_response.dart';
+import 'package:productive_ramadan_app/repositories/sharedpreferences.dart';
+import 'package:productive_ramadan_app/utils/appbar.dart';
 
 import 'package:productive_ramadan_app/utils/constants.dart';
 import 'package:productive_ramadan_app/utils/hadith_ayah_card.dart';
@@ -24,15 +26,23 @@ class _OneAyahViewState extends State<OneAyahView> {
   String text;
   String ayahText = "Ayah";
   AyahService _service = AyahService();
+  MyAppBar _appBar = MyAppBar();
+
+  initState() {
+    super.initState();
+    widget.dayNumber = SharedPrefs.getAyahDay();
+  }
 
   APIResponse<List<Ayah>> _apiResponse = APIResponse();
 
-  getOneHadith(int day) async {
+  getOneAyah(int day) async {
     _apiResponse = await _service.getOneAyah(day);
     print("Api response " + _apiResponse.data[0].text);
     text = _apiResponse.data[0].text;
 
     widget.dayNumber++;
+    print("Ayah view dayNumber ${widget.dayNumber}");
+    SharedPrefs.setAyahDay(widget.dayNumber);
     setState(() {
       print("Day number " + widget.dayNumber.toString());
     });
@@ -41,14 +51,7 @@ class _OneAyahViewState extends State<OneAyahView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Center(
-          child: Text(
-            "Productive Ramadan",
-            style: TextStyle(fontSize: 25.0, color: Colors.amberAccent),
-          ),
-        ),
-      ),
+      appBar: _appBar.buildAppBar(context),
       drawer: SideDrawer(),
       body: Center(
         child: Column(
@@ -59,7 +62,7 @@ class _OneAyahViewState extends State<OneAyahView> {
               "Get Ayah ${widget.dayNumber}",
               () {
                 setState(() {
-                  getOneHadith(widget.dayNumber);
+                  getOneAyah(widget.dayNumber);
                 });
               },
             ),

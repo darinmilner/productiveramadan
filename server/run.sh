@@ -1,0 +1,1 @@
+go build -o ramadan cmd/web/*.go && ./ramadan

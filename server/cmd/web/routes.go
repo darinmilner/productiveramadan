@@ -14,6 +14,10 @@ func routes(app *config.AppConfig) http.Handler {
 
 	mux.Use(WriteToConsole) //Testing middleware
 
+	//Session middleware
+	mux.Use(NoSurf)
+	mux.Use(SessionLoad)
+
 	hadithHandler := handlers.NewHadithHandlers()
 	ayahHandler := handlers.NewAyahHandlers()
 	mux.Get("/", handlers.Repo.Home)
@@ -22,6 +26,9 @@ func routes(app *config.AppConfig) http.Handler {
 	mux.Get("/ayahs", ayahHandler.GetAyahs)
 	mux.Get("/hadiths/{id}", hadithHandler.GetHadith)
 	mux.Get("/ayahs/{id}", ayahHandler.GetAyahs)
+	mux.Get("/signup", handlers.Repo.Signup)
+	mux.Post("/signup", handlers.Repo.PostSignUp)
+	mux.Get("/signup-success", handlers.Repo.SignupSuccess)
 
 	fileServer := http.FileServer(http.Dir("./static/"))
 

@@ -1,3 +1,4 @@
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -19,6 +20,7 @@ import 'package:productive_ramadan_app/utils/task_app_error.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'answer_card.dart';
+import 'landing.dart';
 import 'utils/side_drawer.dart';
 
 final taskTrackerProvider = FutureProvider.autoDispose<List<DailyTaskModel>>(
@@ -114,65 +116,110 @@ class TaskResults extends StatelessWidget {
   static int day = 1;
   TaskResults({Key key, @required this.state, @required this.tasks})
       : super(key: key);
+  //TaskController taskController = TaskController();
 
+  void showInfoFlushbar(BuildContext context) {
+    Flushbar(
+      title: '${state.incorrect.length} Goals Not Reached',
+      message: 'May Allah help us increase our ibadaah',
+      icon: Icon(
+        Icons.info_outline,
+        size: 28,
+        color: Colors.red.shade300,
+      ),
+      leftBarIndicatorColor: Colors.blue.shade300,
+      duration: Duration(seconds: 5),
+    )..show(context);
+  }
+
+  String text = "";
   @override
   Widget build(BuildContext context) {
     String score =
         state.correct.length.toString() + "/" + tasks.length.toString();
 
-    print(state.incorrect.asMap());
+    print(state.incorrect.length.toString());
 
-    // displayIncorrect() {
-    //   return ListView.builder(itemBuilder: (context, index) => state.incorrect[index]);
-    // }
-    //List<DailyTasksScore> _dailyScores;
-
-    // _saveScoreToSharedPrefs(List<String> newScore) async {
-    //   await SharedPrefs.setNewDailyScore(newScore);
-    // }
-
-    void _startNextDayTaskTracker() async {
-      context.refresh(taskRepositoryProvider);
-      context.read(taskControllerProvider).reset();
-
-      day++;
-      print("day after ++ $day");
-      print("Day before shared prefs $day");
-      SharedPrefs.setDay(day);
-      if (day >= 29) {
-        day = 29;
-      }
+    if (state.incorrect.length != 0) {
+      text = "Ramadan tasks that were not completed today!";
+    } else {
+      text = "All Tasks are completed today Alhamdulillah";
     }
-
-    getDay() {
-      int newDay = SharedPrefs.getDay();
-      if (isLoading) {
-        newDay++;
-        isLoading = false;
-      }
-      // print("New Day from Shared Prefs $newDay");
-      return newDay;
-    }
-
-    int newDay = getDay();
-    var stringDay = newDay.toString();
-
-    print("New day from shared Prefs $stringDay");
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(
-          "${score.toString()}",
-          style: TextStyle(
-            color: Colors.amberAccent,
-            fontSize: 60.0,
-            fontWeight: FontWeight.bold,
+        Padding(
+          padding: const EdgeInsets.only(top: 10.0),
+          child: Text(
+            text,
+            style: TextStyle(
+              fontSize: 28,
+              color: Colors.teal[800],
+              fontStyle: FontStyle.italic,
+            ),
+            textAlign: TextAlign.center,
           ),
-          textAlign: TextAlign.center,
+        ),
+        Expanded(
+          child: state.incorrect.length != 0
+              ? ListView.builder(
+                  itemCount: state.incorrect.length,
+                  itemBuilder: (ctx, index) {
+                    print("Listview index: ${index}");
+
+                    return ListTile(
+                        title: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Card(
+                        margin: const EdgeInsets.all(10.0),
+                        color: Colors.tealAccent,
+                        clipBehavior: Clip.antiAlias,
+                        shadowColor: Colors.green[900],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        elevation: 5,
+                        child: Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Text(
+                            "${state.incorrect[index].correctTaskAnswer}",
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.red[600],
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ));
+                  })
+              : Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Card(
+                      margin: const EdgeInsets.all(10.0),
+                      color: Colors.tealAccent,
+                      clipBehavior: Clip.antiAlias,
+                      shadowColor: Colors.green[900],
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      elevation: 5,
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Text(
+                          "JazakAllahu Khairun, All are complete! May Allah accept your ibadah",
+                          style: kDailyTrackerTestStyle,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
         ),
         Text(
-          "CORRECT",
+          "${score.toString()}",
           style: TextStyle(
             color: Colors.amberAccent,
             fontSize: 40.0,
@@ -180,18 +227,62 @@ class TaskResults extends StatelessWidget {
           ),
           textAlign: TextAlign.center,
         ),
+        Text(
+          "COMPLETED",
+          style: TextStyle(
+            color: Colors.amberAccent,
+            fontSize: 30.0,
+            fontWeight: FontWeight.bold,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        // score == "4/4".trim()
+        //     ? Center(
+        //         child: Padding(
+        //           padding: const EdgeInsets.all(25.0),
+        //           child: Text(
+        //             "JazakAllahu Khairun, May Allah accept your ibadah",
+        //             style: kDailyTrackerTestStyle,
+        //             textAlign: TextAlign.center,
+        //           ),
+        //         ),
+        //       ) :
+        Center(
+          child: Padding(
+            padding: const EdgeInsets.all(25.0),
+            child: Text(
+              "May Allah help you to increase your ibadah throughout Ramadan and after",
+              style: kDailyTrackerTestStyle,
+            ),
+          ),
+        ),
+        Divider(
+          height: 20.0,
+        ),
+        Center(
+            child: Text(
+          "Please Remember to fast tomorrow.",
+          style: kDailyTrackerTestStyle,
+          textAlign: TextAlign.center,
+        )),
         const SizedBox(
           height: 40.0,
         ),
         Container(
           height: 60.0,
-          width: MediaQuery.of(context).size.width * 0.6,
+          width: MediaQuery.of(context).size.width * 0.7,
+          padding: const EdgeInsets.all(10.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              button.buildButton(kDarkTeal, Colors.amberAccent,
-                  "Day ${newDay + 1} Tasks", _startNextDayTaskTracker),
+              button.buildButton(
+                kDarkTeal,
+                Colors.amberAccent,
+                "Back To Home",
+                () => Navigator.of(context)
+                    .pushReplacementNamed(LandingPage.routeName),
+              ),
             ],
           ),
         ),
