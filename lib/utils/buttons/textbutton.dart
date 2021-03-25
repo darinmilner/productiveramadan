@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:productive_ramadan_app/islamic_quiz.dart';
+import 'package:productive_ramadan_app/repositories/islamic_quiz.dart';
 
 QuizPage quizPage = QuizPage();
 Widget buildTextButton(

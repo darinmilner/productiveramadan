@@ -1,9 +1,11 @@
 package main
 
 import (
+	"context"
 	"encoding/gob"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/alexedwards/scs/v2"
@@ -11,12 +13,17 @@ import (
 	"github.com/darinmilner/productiveapp/internal/handlers"
 	"github.com/darinmilner/productiveapp/internal/models"
 	"github.com/darinmilner/productiveapp/internal/render"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 const portNumber = ":8001"
 
 var session *scs.SessionManager
 var app config.AppConfig
+
+var infoLog *log.Logger
+var errorLog *log.Logger
 
 func main() {
 
@@ -38,6 +45,15 @@ func run() error {
 
 	//Change to true when in production
 	app.InProduction = false
+
+	//Info log
+	infoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+
+	app.InfoLog = infoLog
+
+	errorLog = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+	app.ErrorLog = errorLog
+
 	session = scs.New()
 	session.Lifetime = 24 * time.Hour
 
@@ -55,6 +71,11 @@ func run() error {
 
 	app.TemplateCache = tc
 	app.UseCache = false
+
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
+	clientOptions := options.Client().ApplyURI(config.DbConnectionString)
+	config.Client, _ = mongo.Connect(ctx, clientOptions)
 
 	repo := handlers.NewRepo(&app)
 

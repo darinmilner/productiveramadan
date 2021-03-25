@@ -6,7 +6,7 @@ import 'package:productive_ramadan_app/models/failure_model.dart';
 import 'package:productive_ramadan_app/repositories/base_dailytask_repository.dart';
 import 'package:meta/meta.dart';
 
-import '../daily_tasks.dart';
+import '../screens/daily_tasks.dart';
 
 final dioProvider = Provider<Dio>((ref) => Dio());
 
@@ -73,13 +73,13 @@ class DailyTaskRepository extends BaseDailyTaskRepository {
       },
       {
         "task": "How many minutes of reading Quran",
-        "correctTaskAnswer": "More than 20 minutes.",
+        "correctTaskAnswer": "Read Quran more than 20 minutes.",
         "dayNumber": 1,
         "isComplete": false,
         "allPossibleAnswers": [
           "Did not read Quran today",
-          "Less than 10 minutes",
-          "10 to 20minutes",
+          "Read Quran less than 10 minutes",
+          "Read Quran 10 to 20minutes",
         ],
       },
       {

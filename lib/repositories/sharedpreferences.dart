@@ -41,6 +41,8 @@ class SharedPrefs {
       _sharedPrefs.getInt(_keyRemainingGoals) ?? 0;
 
   static String get todoGoal => _sharedPrefs.getString(kKeyTodoGoal) ?? "";
+
+  static const String versionNum = "1.0.0";
 }
 
 final sharedPrefs = SharedPrefs();

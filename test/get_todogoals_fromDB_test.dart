@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:productive_ramadan_app/repositories/todo_goals_repository.dart';
-import 'package:productive_ramadan_app/todo.dart';
+import 'package:productive_ramadan_app/utils/todo.dart';
 
 class MockTodoGoalRepository implements RepositoryServiceTodoGoals {
   Future<List<Todo>> getAllTodoGoals() async {

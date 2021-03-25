@@ -31,7 +31,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/signup">Newsletter</a>
                 </li>
-               
+               <li class="nav-item">
+                   <a class="nav-link" href="https://www.buymeacoffee.com/darinmilner" target="_blank">Donate</a>
+               </li>
             </ul>
         </div>
     </nav>
@@ -50,13 +52,25 @@
                             <a id="aboutPageLinK" href="/about">Click for more information about Ramadan <br> and our App</a>
                         </li>
                         <li style="margin-top: 2rem;" class="mt-4">
-                            <a id="quranLink" href="https://quran.com/" >Read the Quran</a>
+                            <a id="quranLink" href="https://quran.com/" target="_blank">Read the Quran</a>
                         </li>
                         <li class="mt-3">
                             <img class="photo" src="../static/images/apphome.png" height="300" alt="App Home" >
                             <img class="photo" src="../static/images/ProgressPG.png" height="300" alt="App Home">
                         </li>
                      
+                        <br>
+                        <br>
+                        <div>
+                            <h4>Today's Date</h4>
+
+                            {{with .Month}}
+                            <h5>{{.}}</h5>
+                            {{end}}
+                            {{with .Day}}
+                            <h5>{{.}}</h5>
+                            {{end}}
+                        </div>
                     </ul>
                     
                 </div>
@@ -76,9 +90,13 @@
         <div class="donation">
             <h3>Please consider a donation</h3>
             <p>Donations will go towards app upkeep and making more halal content inshallah.</br>  JazakAllahu Khairun</p>
+            <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button"
+                data-slug="darinmilner" data-color="#40DCA5" data-emoji="" data-font="Cookie" data-text="Buy me a meal"
+                data-outline-color="#000000" data-font-color="#ffffff" data-coffee-color="#FFDD00"></script>
         </div>  
       </div>
    </section>
+
 </main>
     <div class="circle1"></div>
     <div class="circle2"></div>
@@ -106,5 +124,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
+
+        
 </body>    
 </html>

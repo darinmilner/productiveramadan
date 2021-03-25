@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:productive_ramadan_app/islamic_quiz.dart';
-import 'package:productive_ramadan_app/todo_goals.dart';
+import 'package:productive_ramadan_app/repositories/islamic_quiz.dart';
+import 'package:productive_ramadan_app/screens/todo_goals.dart';
 
-import '../ayah_aday_page.dart';
-import '../daily_tasks.dart';
-import '../hadith_aday.dart';
+import '../screens/ayah_aday_page.dart';
+import '../screens/daily_tasks.dart';
+import '../screens/hadith_aday.dart';
 import 'constants.dart';
 
 class SideDrawer extends StatelessWidget {

@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -9,11 +10,14 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/darinmilner/productiveapp/internal/config"
 	"github.com/darinmilner/productiveapp/internal/forms"
+	"github.com/darinmilner/productiveapp/internal/helpers"
 	"github.com/darinmilner/productiveapp/internal/models"
 	"github.com/darinmilner/productiveapp/internal/render"
+	"github.com/hablullah/go-hijri"
 )
 
 //Repo is the repository used by the handlers
@@ -36,29 +40,85 @@ func NewHandlers(r *Repository) {
 	Repo = r
 }
 
+//GetHijiriCalendarDay returns the date on the Hijri Calender
+func GetHijriCalendarDay() hijri.HijriDate {
+	today := time.Now()
+	hijriDate, _ := hijri.CreateHijriDate(today, hijri.Default)
+	fmt.Printf("%s %04d-%02d-%02d \n",
+		today.Format("2006-01-02"),
+		hijriDate.Year,
+		hijriDate.Month,
+		hijriDate.Day)
+
+	return hijriDate
+}
+
 //Home page function
 func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
-	remoteIP := r.RemoteAddr
-	m.App.Session.Put(r.Context(), "remoteIP", remoteIP)
-	render.RenderTemplates(w, r, "home.page.html", &models.TemplateData{})
+
+	data := GetHijriCalendarDay()
+
+	var hijriDate models.HijriDate
+
+	var today int64
+	today = data.Day
+	month := data.Month
+
+	hijriDate.Day = int(today)
+
+	if month == 1 {
+		hijriDate.Month = "Muharram"
+	} else if month == 2 {
+		hijriDate.Month = "Safar"
+	} else if month == 3 {
+		hijriDate.Month = "Rabbi alAwwal"
+	} else if month == 4 {
+		hijriDate.Month = "Rabbi alThani"
+	} else if month == 5 {
+		hijriDate.Month = "Jumada alAwwal"
+	} else if month == 6 {
+		hijriDate.Month = "Jumada alThani"
+	} else if month == 7 {
+		hijriDate.Month = "Rajab"
+	} else if month == 8 {
+		hijriDate.Month = "Shaban"
+	} else if month == 9 {
+		hijriDate.Month = "Ramadan"
+	} else if month == 10 {
+		hijriDate.Month = "Shawwal"
+	} else if month == 11 {
+		hijriDate.Month = "Dhu alQi'dah"
+	} else if month == 12 {
+		hijriDate.Month = "Dhu alHijjah"
+	}
+
+	fmt.Print("HijriDay ", hijriDate.Day)
+	fmt.Print("hijriMonth ", hijriDate.Month)
+
+	log.Print(data)
+	render.RenderTemplates(w, r, "home.page.html", &models.TemplateData{
+		Day:   hijriDate.Day,
+		Month: hijriDate.Month,
+	})
 }
 
 //About page function
 func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
-	//perform some logic
-	stringMap := make(map[string]string)
-	remoteIP := m.App.Session.GetString(r.Context(), "remoteIP")
-
-	stringMap["remoteIP"] = remoteIP
 
 	render.RenderTemplates(w, r, "about.page.html", &models.TemplateData{})
+}
+
+//DoesNotExistPage is the 404 render page function
+func (m *Repository) DoesNotExistPage(w http.ResponseWriter, r *http.Request) {
+
+	render.RenderTemplates(w, r, "404.page.html", &models.TemplateData{})
 }
 
 //About page function
 func (m *Repository) SignupSuccess(w http.ResponseWriter, r *http.Request) {
 	signup, ok := m.App.Session.Get(r.Context(), "signup").(models.Signup)
 	if !ok {
-		fmt.Println("Could not get signup model from the session")
+		m.App.ErrorLog.Println("Could not get signup model from the session")
 		m.App.Session.Put(r.Context(), "error", "Could not get signup from context")
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
@@ -88,7 +148,7 @@ func (m *Repository) PostSignUp(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 
 	if err != nil {
-		log.Println(err)
+		helpers.ServerError(w, err)
 		return
 	}
 
@@ -98,13 +158,18 @@ func (m *Repository) PostSignUp(w http.ResponseWriter, r *http.Request) {
 		Email:     r.Form.Get("email"),
 	}
 
+	log.Print("User Data from form")
+	log.Print(signup.FirstName)
+	log.Print(signup.LastName)
+	log.Print(signup.Email)
+
 	form := forms.New(r.PostForm)
 
 	form.Required("first-name", "last-name", "email")
 
-	form.MinLength("first-name", 3, r)
+	form.MinLength("first-name", 3)
 
-	form.MinLength("last-name", 3, r)
+	form.MinLength("last-name", 3)
 
 	form.IsEmail("email")
 
@@ -119,10 +184,40 @@ func (m *Repository) PostSignUp(w http.ResponseWriter, r *http.Request) {
 
 	}
 
+	var user models.User
+	user.FirstName = r.Form.Get("first-name")
+	user.LastName = r.Form.Get("last-name")
+	user.Email = r.Form.Get("email")
+
+	log.Print(user)
+	CreateUserInDB(w, r, user)
+
 	//Add session
 	m.App.Session.Put(r.Context(), "signup", signup)
 
 	http.Redirect(w, r, "/signup-success", http.StatusSeeOther)
+}
+
+//CreateUserInDB creates a new user who signed up in the DB
+func CreateUserInDB(w http.ResponseWriter, r *http.Request, user models.User) {
+	createHeader(w)
+
+	json.NewDecoder(r.Body).Decode(&user)
+	collection := config.Client.Database(config.DbName).Collection(config.CollectionName)
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	result, err := collection.InsertOne(ctx, user)
+	handleError(err)
+	json.NewEncoder(w).Encode(result)
+}
+
+func handleError(err error) {
+	if err != nil {
+		fmt.Println("Error creating person in DB", err)
+	}
+}
+
+func createHeader(w http.ResponseWriter) {
+	w.Header().Add("content-type", "application/json")
 }
 
 //Hadith defines the hadith structure
@@ -257,11 +352,16 @@ func NewAyahHandlers() *ayahHandlers {
 			Ayah{18, "O mankind! Verily, there has come to you a convincing proof (Prophet Muhammad صلى الله عليه وسلم) from your Lord; and We sent down to you a manifest light (this qur'an).\n(سورة النساء, An-Nisaa, Chapter #4, Verse #174)\n"},
 			Ayah{19, "And We have sent down to you (O Muhammad صلى الله عليه وسلم) the Book (this qur'an) in truth, confirming the Scripture that came before it and Muhaymin (trustworthy in highness and a witness) over it (old Scriptures) . So judge among them by what Allah has revealed, and follow not their vain desires, diverging away from the truth that has come to you. To each among you, We have prescribed a law and a clear way. If Allah had willed, He would have made you one nation, but that (He) may test you in what He has given you; so compete in good deeds. The return of you (all) is to Allah; then He will inform you about that in which you used to differ.\n(سورة المائدة, Al-Maaida, Chapter #5, Verse #48)"},
 			Ayah{20, "But no, by your Lord, they can have no faith, until they make you (o Muhammad صلى الله عليه وسلم) judge in all disputes between them, and find in themselves no resistance against your decisions, and accept (them) with full submission.\n(سورة النساء, An-Nisaa, Chapter #4, Verse #65)"},
-			Ayah{21, "Ayah 7"},
-			Ayah{22, "Ayah 7"},
-			Ayah{23, "Ayah 7"},
-			Ayah{24, "Ayah 7"},
-			Ayah{25, "Ayah 7"},
+			Ayah{21, "Ar-Rahmaan 55| 78 verses | The Beneficent | Medinan Bismi Allahi alrrahmani alrraheemi1. The Most Gracious (Allah)!  2. He has taught (you mankind) the Qur'an (by His Mercy).  3. He created man.  4. He taught him eloquent speech.  5. The sun and the moon run on their fixed courses (exactly) calculated with measured out stages for each (for reckoning).  6. And the herbs (or stars) and the trees both prostrate themselves (to Allah - See V.22:18) (Tafsir Ibn Kathir)  7. And the heaven: He has raised it high, and He has set up the Balance.  8. In order that you may not transgress (due) balance.  9. And observe the weight with equity and do not make the balance deficient.  10. And the earth: He has put down (laid) for the creatures.  11. Therein are fruits and date-palms producing sheathed fruit-stalks (enclosing dates).  12. And, also corn, with (its) leaves and stalk for fodder, and sweet-scented plants.  13. Then which of the Blessings of your Lord will you both (jinn and men) deny?  14. He created man (Adam) from sounding clay like the clay of pottery.  15. And the jinn: He created from a smokeless flame of fire.  16. Then which of the Blessings of your Lord will you both (jinn and men) deny?"},
+			Ayah{22, "Ad-Dhuhaa 93 | 11 verses | The Morning Hours | Meccan  Bismi Allahi alrrahmani alrraheemi  \n1. By the forenoon (after sunrise). \n2. By the night when it darkens (and stand still).  \n3. Your Lord (O Muhammad صلى الله عليه وسلم) has neither forsaken you nor hates you.  \n4. And indeed the Hereafter is better for you than the present (life of this world).  \n5. And verily, your Lord will give you (all good) so that you shall be well-pleased.  \n6. Did He not find you (O Muhammad صلى الله عليه وسلم) an orphan and gave you a refuge? \n 7. And He found you unaware (of the Qur'an, its laws, and Prophethood) and guided you?  \n 8. And He found you poor and made you rich (self-sufficient with self-contentment)?  \n9. Therefore, treat not the orphan with oppression.  \n10. And repulse not the beggar.  \n11. And proclaim the Grace of your Lord (i.e. the Prophethood and all other Graces)."},
+			Ayah{23, "Al-Hujuraat 49 | 18 verses | The Inner Apartments | Medinan \nBismi Allahi alrrahmani alrraheemi \n10. The believers are nothing else than brothers (in Islamic religion). So make reconciliation between your brothers, and fear Allah, that you may receive mercy. \n11. O you who believe! Let not a group scoff at another group, it may be that the latter are better than the former. Nor let (some) women scoff at other women, it may be that the latter are better than the former. Nor defame one another, nor insult one another by nicknames. How bad is it to insult one's brother after having Faith [i.e. to call your Muslim brother (a faithful believer) as: \"O sinner\", or \"O wicked\"]. And whosoever does not repent, then such are indeed Zalimun (wrong-doers, etc.). \n12. O you who believe! Avoid much suspicion; indeed some suspicions are sins. And spy not, neither backbite one another. Would one of you like to eat the flesh of his dead brother? You would hate it (so hate backbiting) . And fear Allah. Verily, Allah is the One Who forgives and accepts repentance, Most Merciful."},
+			Ayah{24, "Al Baqara(the cow) 2:2-5 \n2. This is the Book (the Qur'an), whereof there is no doubt, a guidance to those who are Al-Muttaqun. \n3. Who believe in the Ghaib and perform As-Salat (Iqamat-as-Salat) and spend out of what We have provided for them. \n4. And who believe in (the Qur'an and the Sunnah ) which has been sent down to you (O Muhammad صلى الله عليه وسلم) and in that which was sent down before you [the Taurat (Torah) and the Injeel (Gospel), etc.] and they believe with certainty in the Hereafter. \n5. They are on (true) guidance from their Lord, and they are the successful."},
+			Ayah{25, "Al Baqara(the cow) 2:177  \n177. It is not Al-Birr (piety, righteousness, and each and every act of obedience to Allah, etc.) that you turn your faces towards east and (or) west (in prayers); but Al-Birr is (the quality of) the one who believes in Allah, the Last Day, the Angels, the Book, the Prophets and gives his wealth, in spite of love for it, to the kinsfolk, to the orphans, and to Al-Masakin (the poor), and to the wayfarer, and to those who ask, and to set slaves free, performs As-Salat (Iqamat-as-Salat ), and gives the Zakat, and who fulfil their covenant when they make it, and who are patient in extreme poverty and ailment (disease) and at the time of fighting (during the battles). Such are the people of the truth and they are Al-Muttaqun."},
+			Ayah{26, "Al Baqara(the cow) 2:255-256 \n255. Allah! La ilaha illa Huwa (none has the right to be worshipped but He), Al-Hayyul-Qayyum (the Ever Living, the One Who sustains and protects all that exists). Neither slumber nor sleep overtakes Him. To Him belongs whatever is in the heavens and whatever is on the earth. Who is he that can intercede with Him except with His Permission? He knows what happens to them (His creatures) in this world, and what will happen to them in the Hereafter. And they will never compass anything of His Knowledge except that which He wills. His Kursi extends over the heavens and the earth, and He feels no fatigue in guarding and preserving them. And He is the Most High, the Most Great.  \n256. There is no compulsion in religion. Verily, the Right Path has become distinct from the wrong path. Whoever disbelieves in Taghut and believes in Allah, then he has grasped the most trustworthy handhold that will never break. And Allah is All-Hearer, All-Knower."},
+			Ayah{27, "Al Baqara(the cow) 2:285 \n285. The Messenger (Muhammad صلى الله عليه وسلم) believes in what has been sent down to him from his Lord, and (so do) the believers. Each one believes in Allah, His Angels, His Books, and His Messengers. (They say), \"We make no distinction between one another of His Messengers\" - and they say, \"We hear, and we obey. (We seek) Your Forgiveness, our Lord, and to You is the return (of all).\""},
+			Ayah{28, "Al Hashr(the exile) 59:2-24 \n22. He is Allah, beside Whom La ilaha illa Huwa (none has the right to be worshipped but He) the All-Knower of the unseen and the seen. He is the Most Gracious, the Most Merciful. \n23. He is Allah beside Whom La ilaha illa Huwa (none has the right to be worshipped but He), the King, the Holy, the One Free from all defects, the Giver of security, the Watcher over His creatures, the All-Mighty, the Compeller, the Supreme. Glory be to Allah! (High is He) above all that they associate as partners with Him. \n24. He is Allah, the Creator, the Inventor of all things, the Bestower of forms. To Him belong the Best Names. All that is in the heavens and the earth glorify Him. And He is the All-Mighty, the All-Wise."},
+			Ayah{29, "At-Takaathur(Competition) 102 \nBismi Allahi alrrahmani alrraheemi \n1. The mutual rivalry (for piling up of worldly things) diverts you,\n2. Until you visit the graves (i.e. till you die).\n3. Nay! You shall come to know!\n4. Again nay! You shall come to know!\n5. Nay! If you knew with a sure knowledge (the end result of piling up, you would not have been occupied yourselves in worldly things).\n6. Verily, You shall see the blazing Fire (Hell)!\n7. And again, you shall see it with certainty of sight!\n8. Then on that Day you shall be asked about the delights (you indulged in, in this world)!"},
+			Ayah{30, "As shams(the sun) 91: \n7. By Nafs (Adam or a person or a soul), and Him Who perfected him in proportion. \n8. Then He showed him what is wrong for him and what is right for him.\n9. Indeed he succeeds who purifies his ownself \n10. And indeed he fails who corrupts his ownself "},
 		},
 	}
 

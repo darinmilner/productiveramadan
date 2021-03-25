@@ -32,14 +32,17 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/signup">Newsletter</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://www.buymeacoffee.com/darinmilner" target="_blank">Donate</a>
+                </li>
 
             </ul>
         </div>
     </nav>
 <main>
     <div class="container mt-2">
-        <div class="row">
-            <div class="col signup-form">
+        <div class="form-row">
+            <div class="col-md-9 align-items-center signup-form">
                     <h3 class="fontColor">Sign up for our newsletter to know when more Islamic apps and websites come out. We also send Islamic hadith, tafsir, and Quran ayah reminders periodically inshallah!</h3>
                         {{$res := index .Data "signup"}}
                         <form method="POST" action="/signup" class="" novalidate>

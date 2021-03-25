@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'buttons/button.dart';
-import 'package:productive_ramadan_app/ramadan_dailytasks_tracker.dart';
+import 'package:productive_ramadan_app/screens/ramadan_dailytasks_tracker.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class AppError extends StatelessWidget {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:productive_ramadan_app/repositories/sharedpreferences.dart';
-import 'package:productive_ramadan_app/todo.dart';
+import 'package:productive_ramadan_app/utils/todo.dart';
 import 'package:productive_ramadan_app/utils/buttons/button.dart';
 
 class ToolBar extends HookWidget {
@@ -40,58 +40,70 @@ class ToolBar extends HookWidget {
 
     loadingRemainingTasks = loadRemainingTasksCount();
     return Material(
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: isLoading
-                    ? Text(
-                        "${loadingRemainingTasks.toString()} items left",
-                        overflow: TextOverflow.ellipsis,
-                      )
-                    : Text(
-                        "${numTasks.toString()} items left",
-                        overflow: TextOverflow.ellipsis,
-                      ),
+      child: Container(
+        color: Colors.teal[200],
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    child: isLoading
+                        ? Text(
+                            "${loadingRemainingTasks.toString()} items left",
+                            style: TextStyle(color: Colors.black87),
+                            overflow: TextOverflow.ellipsis,
+                          )
+                        : Text(
+                            "${numTasks.toString()} items left",
+                            style: TextStyle(color: Colors.black87),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                  ),
+                  Expanded(
+                    child: TextField(
+                        controller: searchController,
+                        decoration: const InputDecoration(
+                          labelText: "SEARCH",
+                          labelStyle: TextStyle(color: Colors.black87),
+                          border: InputBorder.none,
+                          icon: Icon(
+                            Icons.search,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        onChanged: (value) {
+                          isLoading = false;
+                          search.state = value;
+                        }),
+                  ),
+                ],
               ),
-              Expanded(
-                child: TextField(
-                    controller: searchController,
-                    decoration: const InputDecoration(
-                      labelText: "SEARCH",
-                      border: InputBorder.none,
-                      icon: Icon(Icons.search),
-                    ),
-                    onChanged: (value) {
-                      isLoading = false;
-                      search.state = value;
-                    }),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Tooltip(
-                message: "Only Uncompleted Goals",
-                child: button.buildButton(Colors.redAccent, Colors.black,
-                    "Active", filterUncompletedGoals),
-              ),
-              Tooltip(
-                message: "Only Completed Goals",
-                child: button.buildButton(Colors.greenAccent, Colors.black,
-                    "Completed", filterCompletedGoals),
-              ),
-              Tooltip(
-                message: "All Goals",
-                child: button.buildButton(
-                    Colors.purpleAccent, Colors.black, "All Goals", allGoals),
-              ),
-            ],
-          ),
-        ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Tooltip(
+                  message: "Only Uncompleted Goals",
+                  child: button.buildButton(Colors.redAccent, Colors.black,
+                      "Active", filterUncompletedGoals),
+                ),
+                Tooltip(
+                  message: "Only Completed Goals",
+                  child: button.buildButton(Colors.greenAccent, Colors.black,
+                      "Completed", filterCompletedGoals),
+                ),
+                Tooltip(
+                  message: "All Goals",
+                  child: button.buildButton(
+                      Colors.purpleAccent, Colors.black, "All Goals", allGoals),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

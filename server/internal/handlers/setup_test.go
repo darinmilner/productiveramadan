@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 
 	"github.com/darinmilner/productiveapp/internal/config"
@@ -27,6 +28,12 @@ func getRoutes() http.Handler {
 	//Change to true when in production
 	app.InProduction = false
 
+	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+
+	app.InfoLog = infoLog
+
+	errorLog := log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+	app.ErrorLog = errorLog
 	app.TemplateCache = tc
 	app.UseCache = true
 

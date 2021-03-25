@@ -29,6 +29,7 @@ func routes(app *config.AppConfig) http.Handler {
 	mux.Get("/signup", handlers.Repo.Signup)
 	mux.Post("/signup", handlers.Repo.PostSignUp)
 	mux.Get("/signup-success", handlers.Repo.SignupSuccess)
+	mux.Get("/*", handlers.Repo.DoesNotExistPage)
 
 	fileServer := http.FileServer(http.Dir("./static/"))
 

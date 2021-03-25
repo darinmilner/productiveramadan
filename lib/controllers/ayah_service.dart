@@ -16,7 +16,8 @@ class AyahService {
     )
         .then((data) {
       if (data.statusCode == 200) {
-        final jsonData = json.decode(data.body);
+        //TODO: Check Arabic Decoding
+        final jsonData = json.decode(utf8.decode(data.bodyBytes));
         print(jsonData);
         final ayahs = <Ayah>[];
 

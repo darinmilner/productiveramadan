@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:productive_ramadan_app/todo.dart';
+import 'package:productive_ramadan_app/utils/todo.dart';
 
 void main() {
   testWidgets("Initializes with empty list", (tester) async {

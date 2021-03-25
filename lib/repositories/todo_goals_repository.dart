@@ -1,6 +1,6 @@
 import 'package:hooks_riverpod/all.dart';
 import 'package:productive_ramadan_app/controllers/database_helper.dart';
-import 'package:productive_ramadan_app/todo.dart';
+import 'package:productive_ramadan_app/utils/todo.dart';
 import 'package:sqflite/sqflite.dart';
 
 final todoGoalsFromDBRepositoryProvider =

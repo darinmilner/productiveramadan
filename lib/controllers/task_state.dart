@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:productive_ramadan_app/daily_tasks.dart';
+import 'package:productive_ramadan_app/screens/daily_tasks.dart';
 import 'package:productive_ramadan_app/models/daily_tasks_model.dart';
 
 enum TaskStatus { initial, correct, incorrect, complete }

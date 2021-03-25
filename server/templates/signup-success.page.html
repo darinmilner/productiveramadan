@@ -32,30 +32,39 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/signup">Newsletter</a>
                 </li>
-
+                <li class="nav-item">
+                    <a class="nav-link" href="https://www.buymeacoffee.com/darinmilner" target="_blank">Donate</a>
+                </li>
             </ul>
         </div>
     </nav>
     <main>
-        <section class="glass">
+        <!-- <section class="glass"> -->
             {{$res := index .Data "signup"}}
             <div class="container mt-3">
                 <div class="row">
-                    <div class="col">
+                    <div class="col fontColor">
                         <h3>Thank you for signing up to our newsletter</h3>
                         <h4>JazakAllahu Khairun</h4>
 
                         <table class="table table-striped">
                             <thead></thead>
                             <tbody>
-                                <tr>Name: </tr>
-                                <td>{{$res.FirstName}} {{$res.LastName}}</td>
-                                <br>
-                            </tbody>
-                            <tbody>
-                                <tr>Email: </tr>
-                                <td>{{$res.Email}}</td>
-                                <br>
+                                <tr>
+                                    <td>First Name: </td>
+                                    <td>{{$res.FirstName}} </td>
+                                    <br>
+                                </tr>
+                                <tr>
+                                    <td>Last Name: </td>
+                                    <td>{{$res.LastName}}</td>
+                                    <br>
+                                 </tr>
+                                <tr>
+                                    <td>Email: </td>
+                                    <td>{{$res.Email}}</td>
+                                    <br>
+                                </tr>  
                             </tbody>
                         </table>
                         <br>
@@ -64,7 +73,7 @@
                     </div>
                 </div>
             </div>
-        </section>
+        <!-- </section> -->
     </main>
 
     <script>

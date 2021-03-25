@@ -12,6 +12,7 @@ type AppConfig struct {
 	UseCache      bool
 	TemplateCache map[string]*template.Template
 	InProduction  bool
+	ErrorLog      *log.Logger
 	InfoLog       *log.Logger
 	Session       *scs.SessionManager
 }

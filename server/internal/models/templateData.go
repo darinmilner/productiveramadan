@@ -13,4 +13,6 @@ type TemplateData struct {
 	Error     string
 	Form      *forms.Form
 	Data      map[string]interface{}
+	Day       int
+	Month     string
 }
