@@ -48,20 +48,8 @@ func run() error {
 	inProduction := flag.Bool("production", true, "Application is in production")
 	useCache := flag.Bool("cache", true, "Use Template cache")
 
-	//dbName := flag.String("dbname", "", "db name")
-	//dbConnectionString := flag.String("dbstring", "", "db connection string")
-	// dbUser := flag.String("dbuser", "", "db user")
-	// dbPass := flag.String("dbpass", "", "db password")
-	//dbPort := flag.String("dbport", "", "db port")
-	//dbSSL := flag.String("dbssl", "disable", "db ssl setting")
-
 	flag.Parse()
-	//Change to true when in production
 
-	// if *dbConnectionString == "" {
-	// 	log.Print("Mongo DB connection string missing")
-	// 	os.Exit(1)
-	// }
 	app.InProduction = *inProduction
 
 	//Info log
@@ -92,7 +80,6 @@ func run() error {
 
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
-	//connectionString := fmt.Sprintf("%s", *&dbConnectionString)
 	clientOptions := options.Client().ApplyURI(config.DbConnectionString)
 	config.Client, _ = mongo.Connect(ctx, clientOptions)
 
