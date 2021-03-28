@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/gob"
+	"flag"
 	"log"
 	"net/http"
 	"os"
@@ -43,8 +44,25 @@ func run() error {
 	//put into the session
 	gob.Register(models.Signup{})
 
+	//read flags
+	inProduction := flag.Bool("production", true, "Application is in production")
+	useCache := flag.Bool("cache", true, "Use Template cache")
+
+	//dbName := flag.String("dbname", "", "db name")
+	//dbConnectionString := flag.String("dbstring", "", "db connection string")
+	// dbUser := flag.String("dbuser", "", "db user")
+	// dbPass := flag.String("dbpass", "", "db password")
+	//dbPort := flag.String("dbport", "", "db port")
+	//dbSSL := flag.String("dbssl", "disable", "db ssl setting")
+
+	flag.Parse()
 	//Change to true when in production
-	app.InProduction = false
+
+	// if *dbConnectionString == "" {
+	// 	log.Print("Mongo DB connection string missing")
+	// 	os.Exit(1)
+	// }
+	app.InProduction = *inProduction
 
 	//Info log
 	infoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
@@ -70,10 +88,11 @@ func run() error {
 	}
 
 	app.TemplateCache = tc
-	app.UseCache = false
+	app.UseCache = *useCache
 
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
+	//connectionString := fmt.Sprintf("%s", *&dbConnectionString)
 	clientOptions := options.Client().ApplyURI(config.DbConnectionString)
 	config.Client, _ = mongo.Connect(ctx, clientOptions)
 

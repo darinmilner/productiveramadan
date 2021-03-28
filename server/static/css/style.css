@@ -34,8 +34,7 @@ ul li {
 
 .signup-form {
   size: 100%;
-  /* display: flex;
-  align-items: center; */
+
 }
 
 li a {
@@ -50,6 +49,10 @@ li a::after {
   color: teal;
 }
 
+.app-logo {
+  margin-left: 15px;
+  margin-right: 30px;
+}
 .navcolor {
   color: teal;
 }
@@ -78,16 +81,16 @@ li a::after {
 .photo {
   margin-left: 20px;
 }
-.img-div {
-  width: 100%;
-}
-
 
 .about-photo {
-  float: right;
+  flex: auto;
+  margin: 20px;
 }
 
-
+.img-div {
+  width: 100%;
+  margin: 30px;
+}
 
 .circle1,
 .circle2 {
@@ -105,12 +108,12 @@ li a::after {
 }
 
 .circle1 {
-  top: 5%;
-  left: 10%;
+  top: 7%;
+  left: 5%;
 }
 .circle2 {
-  bottom: 5%;
-  right: 10%;
+  bottom: 1%;
+  right: 5%;
 }
 
 .dashboard {

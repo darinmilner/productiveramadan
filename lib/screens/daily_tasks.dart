@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:productive_ramadan_app/screens/ramadan_dailytasks_tracker.dart';
 import 'package:productive_ramadan_app/utils/appbar.dart';
 import 'package:productive_ramadan_app/utils/constants.dart';
+import 'package:productive_ramadan_app/utils/side_drawer.dart';
 
 const Color teal = Colors.teal;
 const double bottomContainerHeight = 70.0;
@@ -21,6 +22,7 @@ class DailyTasks extends StatelessWidget {
     MyAppBar _appBar = MyAppBar();
     return Scaffold(
       appBar: _appBar.buildAppBar(context),
+      drawer: SideDrawer(),
       body: Container(
         child: Center(
           child: Column(

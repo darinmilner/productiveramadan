@@ -1,6 +1,4 @@
-import 'package:dartarabic/dartarabic.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:html_character_entities/html_character_entities.dart';
 
 class HadithAyahCard extends StatefulWidget {
@@ -16,66 +14,10 @@ class HadithAyahCard extends StatefulWidget {
 }
 
 class _HadithAyahCardState extends State<HadithAyahCard> {
-  FlutterLocalNotificationsPlugin flutterNotifications;
-  FlutterLocalNotificationsPlugin lastTenNightsNotification;
-
-  @override
-  void initState() {
-    super.initState();
-    var androidInit = AndroidInitializationSettings("appicon");
-    var iOSinit = IOSInitializationSettings();
-
-    var initSettings = InitializationSettings(androidInit, iOSinit);
-    flutterNotifications = FlutterLocalNotificationsPlugin();
-    flutterNotifications.initialize(initSettings,
-        onSelectNotification: notificationSelected);
-    lastTenNightsNotification = FlutterLocalNotificationsPlugin();
-    lastTenNightsNotification.initialize(initSettings,
-        onSelectNotification: notificationSelected);
-  }
-
-  Future _showNotification() async {
-    var androidDetails = AndroidNotificationDetails(
-      "${widget.ayahHadithText}",
-      "Productive Ramadan",
-      "${widget.dayNumber}",
-      importance: Importance.Default,
-      playSound: true,
-    );
-
-    var iOSDetails = IOSNotificationDetails();
-    var generalNotificationDetails = NotificationDetails(
-      androidDetails,
-      iOSDetails,
-    );
-
-    var scheduleTime = DateTime.now().add(Duration(seconds: 30));
-
-    if (widget.dayNumber == 16) {
-      await lastTenNightsNotification.show(
-        10,
-        "Ramadan Day #${widget.dayNumber}",
-        "Last Ten nights of Ramadan are approaching.  Time to step up our ibadah and finish strong inshallah for more rewards from Allah",
-        generalNotificationDetails,
-        payload: "Step up Ibadah to prepare for the last 10 nights",
-      );
-    }
-
-    await flutterNotifications.schedule(
-      100,
-      "${widget.text} #${widget.dayNumber}",
-      "Check back tomorrow for the next ${widget.ayahHadithText}",
-      scheduleTime,
-      generalNotificationDetails,
-      payload: "Check back tomorrow for the next ${widget.ayahHadithText}",
-      androidAllowWhileIdle: true,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     print(widget.text);
-    _showNotification();
+
     return Expanded(
       child: ListView(
         children: [
@@ -148,15 +90,6 @@ class _HadithAyahCardState extends State<HadithAyahCard> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Future notificationSelected(String payload) async {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        content: Text("$payload"),
       ),
     );
   }

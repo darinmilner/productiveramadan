@@ -1,12 +1,10 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_native_admob/flutter_native_admob.dart';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:productive_ramadan_app/landing.dart';
 import 'package:productive_ramadan_app/repositories/sharedpreferences.dart';
-import 'package:productive_ramadan_app/controllers/splash_screen.dart';
+
 import 'package:productive_ramadan_app/utils/router/page_router.dart';
 
 enum appState { isLoading, loaded }
@@ -20,9 +18,7 @@ void main() async {
   runApp(
     ProviderScope(child: MyApp()),
   );
-  Timer(Duration(seconds: 3), () {
-    print("App Is Showing Splash Screen");
-  });
+
   appStarted = appState.loaded;
 }
 
@@ -41,7 +37,7 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.dark,
       ),
       //home: TodoHome(),
-      home: appStarted == appState.isLoading ? SplashScreen() : LandingPage(),
+      home: LandingPage(),
       onGenerateRoute: PageRouter.generateRoute,
     );
   }

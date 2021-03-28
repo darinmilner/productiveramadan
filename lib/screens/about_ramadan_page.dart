@@ -1,9 +1,24 @@
+import 'package:admob_flutter/admob_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:productive_ramadan_app/admob_service.dart';
 import 'package:productive_ramadan_app/utils/appbar.dart';
 
-class AboutRamadan extends StatelessWidget {
+class AboutRamadan extends StatefulWidget {
   static const route = "/aboutramadan";
+
+  @override
+  _AboutRamadanState createState() => _AboutRamadanState();
+}
+
+class _AboutRamadanState extends State<AboutRamadan> {
   MyAppBar _appBar = MyAppBar();
+  final ams = AdMobService();
+  @override
+  void initState() {
+    Admob.initialize();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +40,9 @@ class AboutRamadan extends StatelessWidget {
                     ),
                   ),
                 ),
-                Text("Add here"),
+                AdmobBanner(
+                    adUnitId: ams.getBannerAdId(),
+                    adSize: AdmobBannerSize.FULL_BANNER),
                 Padding(
                   padding: const EdgeInsets.all(15.0),
                   child: Text(

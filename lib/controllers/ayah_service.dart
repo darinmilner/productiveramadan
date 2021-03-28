@@ -61,13 +61,8 @@ class AyahService {
           text: jsonData["Text"],
           day: jsonData["Day"],
         );
-        // for (var item in jsonData) {
-        //   print("Item in jsonData ${item}");
-        //   final newHadith = Hadith(
-        //     text: item["Text"],
-        //     day: item["Day"],
-        //   );
-        print("newHadith ${newAyah}");
+
+        print("new ayah ${newAyah}");
         ayah.add(newAyah);
         // }
 

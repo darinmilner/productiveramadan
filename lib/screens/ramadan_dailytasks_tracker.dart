@@ -1,3 +1,4 @@
+import 'package:admob_flutter/admob_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -16,6 +17,7 @@ import 'dart:core';
 import 'package:productive_ramadan_app/utils/constants.dart';
 import 'package:productive_ramadan_app/utils/task_app_error.dart';
 
+import '../admob_service.dart';
 import '../utils/answer_card.dart';
 import '../landing.dart';
 import '../utils/side_drawer.dart';
@@ -106,24 +108,38 @@ Widget _buildBody(
         );
 }
 
-class TaskResults extends StatelessWidget {
+class TaskResults extends StatefulWidget {
   final TaskState state;
   final List<DailyTaskModel> tasks;
-  bool isLoading = true;
   static int day = 1;
   TaskResults({Key key, @required this.state, @required this.tasks})
       : super(key: key);
-  //TaskController taskController = TaskController();
+
+  @override
+  _TaskResultsState createState() => _TaskResultsState();
+}
+
+class _TaskResultsState extends State<TaskResults> {
+  bool isLoading = true;
 
   String text = "";
+
+  final ams = AdMobService();
+
+  @override
+  void initState() {
+    super.initState();
+
+    Admob.initialize();
+  }
+
   @override
   Widget build(BuildContext context) {
-    String score =
-        state.correct.length.toString() + "/" + tasks.length.toString();
+    String score = widget.state.correct.length.toString() +
+        "/" +
+        widget.tasks.length.toString();
 
-    print(state.incorrect.length.toString());
-
-    if (state.incorrect.length != 0) {
+    if (widget.state.incorrect.length != 0) {
       text = "Ramadan tasks that were not completed today!";
     } else {
       text = "All Tasks are completed today Alhamdulillah";
@@ -166,9 +182,9 @@ class TaskResults extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: state.incorrect.length != 0
+          child: widget.state.incorrect.length != 0
               ? ListView.builder(
-                  itemCount: state.incorrect.length,
+                  itemCount: widget.state.incorrect.length,
                   itemBuilder: (ctx, index) {
                     print("Listview index: ${index}");
 
@@ -187,7 +203,7 @@ class TaskResults extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.all(15.0),
                           child: Text(
-                            "${state.incorrect[index].correctTaskAnswer}",
+                            "${widget.state.incorrect[index].correctTaskAnswer}",
                             style: TextStyle(
                               fontSize: 20,
                               color: Colors.red[600],
@@ -200,14 +216,14 @@ class TaskResults extends StatelessWidget {
                   })
               : Center(
                   child: Padding(
-                    padding: const EdgeInsets.all(15.0),
+                    padding: const EdgeInsets.all(10.0),
                     child: Card(
                       margin: const EdgeInsets.all(10.0),
                       color: Colors.tealAccent,
                       clipBehavior: Clip.antiAlias,
                       shadowColor: Colors.green[900],
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
+                        borderRadius: BorderRadius.circular(15.0),
                       ),
                       elevation: 5,
                       child: Padding(
@@ -241,7 +257,7 @@ class TaskResults extends StatelessWidget {
           textAlign: TextAlign.center,
         )),
         const SizedBox(
-          height: 40.0,
+          height: 30.0,
         ),
         Container(
           height: 60.0,
@@ -261,6 +277,9 @@ class TaskResults extends StatelessWidget {
             ],
           ),
         ),
+        //AD
+        AdmobBanner(
+            adUnitId: ams.getBannerAdId(), adSize: AdmobBannerSize.BANNER),
       ],
     );
   }

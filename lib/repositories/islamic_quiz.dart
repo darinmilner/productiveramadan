@@ -42,17 +42,14 @@ class _QuizPageState extends State<QuizPage> {
   int questionNumber = 0;
 
   void _gameOver() {
-    print("Quiz over");
     setState(() {
       scoreKeeper = [];
       scoreKeeper2 = [];
     });
-    print("Alert BTN Score $score");
     score = 0;
     quizBrain.restartGame();
   }
 
-  // Alert with single button.
   _showAlert(context) {
     Alert(
       context: context,
@@ -68,7 +65,6 @@ class _QuizPageState extends State<QuizPage> {
           color: kDarkOrangeRed,
           splashColor: kDarkOrangeRed,
           highlightColor: Colors.red,
-          padding: EdgeInsets.only(bottom: 10.0),
           child: Text(
             "TRY AGAIN",
             style: TextStyle(

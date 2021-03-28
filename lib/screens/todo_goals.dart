@@ -80,7 +80,6 @@ class TodoHome extends HookWidget {
               fontSize: 25.0,
               color: Colors.amberAccent,
             ),
-            // backgroundColor: kGreenishTeal),
           ),
         ),
         actions: [
@@ -149,7 +148,7 @@ class TodoHome extends HookWidget {
                             context: context,
                             builder: (_) => AlertBox(),
                           );
-                          // ToolBar.isLoading = false;
+
                           context.read(todoListProvider).remove(todos[i]);
                           RepositoryServiceTodoGoals.deleteTodoGoal(todos[i]);
                           return result;
@@ -192,8 +191,8 @@ class Title extends StatelessWidget {
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: _size,
-            fontWeight: FontWeight.w500,
-            color: Colors.amber,
+            fontWeight: FontWeight.w700,
+            color: Colors.white,
             fontFamily: "Syne",
             letterSpacing: 1.5,
           ),

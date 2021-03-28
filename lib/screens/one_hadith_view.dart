@@ -1,3 +1,4 @@
+import 'package:admob_flutter/admob_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:hijri/hijri_calendar.dart';
 
@@ -10,6 +11,7 @@ import 'package:productive_ramadan_app/utils/constants.dart';
 import 'package:productive_ramadan_app/utils/hadith_ayah_card.dart';
 import 'package:productive_ramadan_app/utils/side_drawer.dart';
 
+import '../admob_service.dart';
 import '../utils/buttons/button.dart';
 
 class OneHadithView extends StatefulWidget {
@@ -28,13 +30,14 @@ class _OneHadithViewState extends State<OneHadithView> {
 
   HadithService _service = HadithService();
   HijriCalendar _today = HijriCalendar.now();
+  final ams = AdMobService();
 
   initState() {
+    Admob.initialize();
     super.initState();
     var hijiriDay = _today.hDay;
     widget.dayNumber = hijiriDay;
     print("hadith daynmber ${widget.dayNumber}");
-    //widget.dayNumber = SharedPrefs.getHadithDay();
   }
 
   APIResponse<List<Hadith>> _apiResponse = APIResponse();
@@ -44,12 +47,7 @@ class _OneHadithViewState extends State<OneHadithView> {
     print("Api response " + _apiResponse.data[0].text);
     text = _apiResponse.data[0].text;
 
-    // widget.dayNumber++;
     print("Hadih A day number ${widget.dayNumber}");
-    //SharedPrefs.setHadithDay(widget.dayNumber);
-    // setState(() {
-    //   print("Day number " + widget.dayNumber.toString());
-    // });
   }
 
   @override
@@ -57,6 +55,11 @@ class _OneHadithViewState extends State<OneHadithView> {
     return Scaffold(
       appBar: _appBar.buildAppBar(context),
       drawer: SideDrawer(),
+      bottomNavigationBar: Container(
+        height: 50,
+        child: AdmobBanner(
+            adUnitId: ams.getBannerAdId(), adSize: AdmobBannerSize.FULL_BANNER),
+      ),
       body: Container(
         decoration: BoxDecoration(
           gradient: kBackgroundGreenGradient,
@@ -90,6 +93,20 @@ class _OneHadithViewState extends State<OneHadithView> {
                       ayahHadithText: "Hadith",
                       dayNumber: widget.dayNumber,
                     ),
+              widget.dayNumber == 16 ||
+                      widget.dayNumber == 17 ||
+                      widget.dayNumber == 18
+                  ? Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Text(
+                        "Last Ten nights of Ramadan are approaching.  Time to step up our ibadah and finish strong inshallah for more rewards from Allah. \nStep up Ibadah to prepare for the last 10 nights",
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    )
+                  : Container(),
             ],
           ),
         ),

@@ -1,16 +1,18 @@
+import 'package:admob_flutter/admob_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:productive_ramadan_app/controllers/ayah_service.dart';
 
 import 'package:productive_ramadan_app/models/api_response.dart';
 import 'package:productive_ramadan_app/screens/one_ayah_view.dart';
-import 'package:productive_ramadan_app/repositories/sharedpreferences.dart';
+
 import 'package:productive_ramadan_app/utils/appbar.dart';
 import 'package:productive_ramadan_app/utils/buttons/button.dart';
 import 'package:productive_ramadan_app/utils/constants.dart';
 
 import 'package:productive_ramadan_app/utils/side_drawer.dart';
 
+import '../admob_service.dart';
 import '../models/ayah_model.dart';
 
 class AyahADay extends StatefulWidget {
@@ -32,11 +34,13 @@ class _AyahADayState extends State<AyahADay> {
   var res;
   List<Ayah> ayahs = [];
 
+  final ams = AdMobService();
+
   initState() {
     super.initState();
+    Admob.initialize();
     HijriCalendar _today = HijriCalendar.now();
     var hijiriDay = _today.hDay;
-    //dayNumber = SharedPrefs.getAyahDay();
     dayNumber = hijiriDay;
     print("Ayah daynmber $dayNumber");
   }
@@ -45,9 +49,7 @@ class _AyahADayState extends State<AyahADay> {
     _apiResponse = await _service.getAyahsList();
     print("Ayah a day " + _apiResponse.data[day - 1].text);
 
-    // dayNumber++;
     print("Day number " + dayNumber.toString());
-    // SharedPrefs.setAyahDay(dayNumber);
     if (dayNumber >= _apiResponse.data.length) {
       dayNumber = _apiResponse.data.length;
     }
@@ -66,17 +68,11 @@ class _AyahADayState extends State<AyahADay> {
       print(_apiResponse.data[i].text);
     }
 
-    print("Day Number " + _apiResponse.data[dayNumber].text);
-
-    print("Ayah length " + ayahs.length.toString());
     setState(() {
       _isLoading = false;
     });
     print("Ayah Button: day # ${dayNumber}");
 
-    //return await hadiths;
-
-    // dayNumber++;
     if (dayNumber >= _apiResponse.data.length) {
       dayNumber = _apiResponse.data.length;
     }
@@ -88,6 +84,11 @@ class _AyahADayState extends State<AyahADay> {
     return Scaffold(
       appBar: _appBar.buildAppBar(context),
       drawer: SideDrawer(),
+      bottomNavigationBar: Container(
+        height: 50,
+        child: AdmobBanner(
+            adUnitId: ams.getBannerAdId(), adSize: AdmobBannerSize.FULL_BANNER),
+      ),
       body: _apiResponse.data == null
           ? Center(
               child: Row(
@@ -179,20 +180,32 @@ class _AyahADayState extends State<AyahADay> {
                       Divider(height: 1, color: kGreenishTeal),
                   itemBuilder: (_, index) {
                     return Center(
-                      child: Column(
-                        children: [
-                          Divider(
-                            height: 10.0,
+                      child: Container(
+                        color: Colors.teal[200],
+                        child: Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Column(
+                            children: [
+                              Divider(
+                                height: 10.0,
+                              ),
+                              Text(
+                                "${_apiResponse.data[index].day}",
+                                style: kHadithAyahTextStyle,
+                              ),
+                              Divider(
+                                height: 10.0,
+                              ),
+                              Text(
+                                "${_apiResponse.data[index].text}",
+                                style: kHadithAyahTextStyle,
+                              ),
+                              Divider(
+                                height: 10.0,
+                              ),
+                            ],
                           ),
-                          Text("${_apiResponse.data[index].day}"),
-                          Divider(
-                            height: 10.0,
-                          ),
-                          Text("${_apiResponse.data[index].text}"),
-                          Divider(
-                            height: 10.0,
-                          ),
-                        ],
+                        ),
                       ),
                     );
                   },

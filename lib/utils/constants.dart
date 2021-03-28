@@ -43,3 +43,9 @@ final LinearGradient kBackgroundGreenGradient = LinearGradient(
   begin: Alignment.topLeft,
   end: Alignment.bottomRight,
 );
+
+final TextStyle kHadithAyahTextStyle = TextStyle(
+  fontSize: 24,
+  fontWeight: FontWeight.w800,
+  color: Colors.black87,
+);

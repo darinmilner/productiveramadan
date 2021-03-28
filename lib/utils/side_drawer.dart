@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:productive_ramadan_app/repositories/islamic_quiz.dart';
+import 'package:productive_ramadan_app/screens/donation.dart';
 import 'package:productive_ramadan_app/screens/todo_goals.dart';
 
 import '../screens/ayah_aday_page.dart';
@@ -122,6 +123,22 @@ class SideDrawer extends StatelessWidget {
             ),
             title: Text(
               "RAMADAN GOALS",
+              style: TextStyle(
+                fontSize: 25.0,
+                color: kGreenishTeal,
+              ),
+            ),
+          ),
+          ListTile(
+            onTap: () {
+              Navigator.of(context).pushReplacementNamed(Donation.route);
+            },
+            leading: Icon(
+              FontAwesomeIcons.moneyBill,
+              color: kGreenishTeal,
+            ),
+            title: Text(
+              "MAKE A DONATION",
               style: TextStyle(
                 fontSize: 25.0,
                 color: kGreenishTeal,

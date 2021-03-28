@@ -46,7 +46,6 @@ class TodoList extends StateNotifier<List<Todo>> {
 
   Todo todo = Todo();
   void add(String description, String id) {
-    //id = todo.incrementID();
     state = [
       ...state,
       Todo(description: description, id: id),
@@ -98,27 +97,12 @@ final getTodosFromDB = FutureProvider.autoDispose((ref) async {
   var tasks = await _repositoryServiceTodoGoals.getAllTodoGoals();
   print("TodoList tasks from db $tasks");
 
-  // for (int i = 0; i < tasks.length; i++) {
-  //   return TodoList([
-  //     Todo(
-  //       description: tasks[i].description,
-  //     ),
-  //   ]);
-  // }
   return tasks;
 });
 
 //Can move to own file--global variable
 final todoListProvider = StateNotifierProvider<TodoList>((ref) {
   return TodoList([]);
-  // return TodoList([
-  //   // Todo(
-  //   //   id: "100000",
-  //   //   description: "Recite Quran 20 minutes everyday",
-  //   // ),
-  //   // Todo(id: "100001", description: "Suhor and Iftar with family and friends"),
-  //   // Todo(id: "100002", description: "Listen to Islamic dars or short halaqah"),
-  // ]);
 });
 
 //Ways to filter the todos goal lists

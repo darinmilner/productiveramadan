@@ -5,13 +5,11 @@ import 'package:productive_ramadan_app/controllers/hadith_service.dart';
 import 'package:productive_ramadan_app/models/api_response.dart';
 import 'package:productive_ramadan_app/models/hadith_model.dart';
 import 'package:productive_ramadan_app/screens/one_hadith_view.dart';
-import 'package:productive_ramadan_app/repositories/sharedpreferences.dart';
 import 'package:productive_ramadan_app/utils/appbar.dart';
 import 'package:productive_ramadan_app/utils/buttons/button.dart';
 import 'package:productive_ramadan_app/utils/constants.dart';
 
 import 'package:productive_ramadan_app/utils/side_drawer.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class HadithADay extends StatefulWidget {
   static const String routeName = "/hadith";
@@ -38,7 +36,7 @@ class _HadithADayState extends State<HadithADay> {
   void initState() {
     super.initState();
     HijriCalendar _today = HijriCalendar.now();
-    // dayNumber = SharedPrefs.getHadithDay();
+
     var hijiriDay = _today.hDay;
     dayNumber = hijiriDay;
     print("Hadith daynmber $dayNumber");
@@ -46,13 +44,6 @@ class _HadithADayState extends State<HadithADay> {
 
   getOneHadith(int day) async {
     _apiResponse = await _service.getOneHadith(day);
-    //print(_apiResponse.data[0].text);
-
-    // dayNumber++;
-    // SharedPrefs.setHadithDay(dayNumber);
-    // setState(() {
-    //   print("Day number " + dayNumber.toString());
-    // });
   }
 
   getHadith() async {
@@ -79,6 +70,12 @@ class _HadithADayState extends State<HadithADay> {
     return Scaffold(
       appBar: _appBar.buildAppBar(context),
       drawer: SideDrawer(),
+      // bottomNavigationBar: Container(
+      //   height: 50,
+      //   child: AdWidget(
+      //     ad: AdMobService.bannerAd()..load(),
+      //   ),
+      // ),
       body: Container(
         decoration: BoxDecoration(
           gradient: kBackgroundGreenGradient,
@@ -182,11 +179,17 @@ class _HadithADayState extends State<HadithADay> {
                                 Divider(
                                   height: 10.0,
                                 ),
-                                Text("${_apiResponse.data[index].day}"),
+                                Text(
+                                  "${_apiResponse.data[index].day}",
+                                  style: kHadithAyahTextStyle,
+                                ),
                                 Divider(
                                   height: 10.0,
                                 ),
-                                Text("${_apiResponse.data[index].text}"),
+                                Text(
+                                  "${_apiResponse.data[index].text}",
+                                  style: kHadithAyahTextStyle,
+                                ),
                                 Divider(
                                   height: 10.0,
                                 ),

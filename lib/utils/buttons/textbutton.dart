@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:productive_ramadan_app/repositories/islamic_quiz.dart';
 
 QuizPage quizPage = QuizPage();
-Widget buildTextButton(
-    Color primaryColor, Color backgroundColor, String text, bool isTrue) {
+Widget buildTextButton(Color primaryColor, Color backgroundColor, String text,
+    bool isTrue, Function onPressed) {
   return TextButton(
-    onPressed: () {
-      //checkAnswer(isTrue);
-    },
+    onPressed: onPressed,
     style: TextButton.styleFrom(
       primary: primaryColor,
       backgroundColor: backgroundColor,

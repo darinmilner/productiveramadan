@@ -1,8 +1,8 @@
-import 'package:flutter/foundation.dart';
+import 'package:admob_flutter/admob_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'package:hijri/hijri_calendar.dart';
+import 'package:productive_ramadan_app/admob_service.dart';
 import 'package:productive_ramadan_app/screens/ayah_aday_page.dart';
 import 'package:productive_ramadan_app/screens/daily_tasks.dart';
 import 'package:productive_ramadan_app/screens/hadith_aday.dart';
@@ -26,57 +26,19 @@ class LandingPage extends StatefulWidget {
 class _LandingPageState extends State<LandingPage> {
   Button button = Button();
   HijriCalendar _today = HijriCalendar.now();
-  static bool isFirstTimeToOpenPage = true;
 
-  FlutterLocalNotificationsPlugin flutterNotifications;
+  final ams = AdMobService();
 
   @override
   void initState() {
     super.initState();
     print(_today);
-    if (kIsWeb) {
-      return;
-    }
-    var androidInit = AndroidInitializationSettings("appicon");
-    var iOSinit = IOSInitializationSettings();
 
-    var initSettings = InitializationSettings(androidInit, iOSinit);
-    flutterNotifications = FlutterLocalNotificationsPlugin();
-    flutterNotifications.initialize(initSettings,
-        onSelectNotification: notificationSelected);
-  }
-
-  Future _showNotification() async {
-    var androidDetails = AndroidNotificationDetails(
-      "Welcome",
-      "Productive Ramadan",
-      "Welcome to the Productive Ramdadan App",
-      importance: Importance.Default,
-    );
-
-    var iOSDetails = IOSNotificationDetails();
-    var generalNotificationDetails = NotificationDetails(
-      androidDetails,
-      iOSDetails,
-    );
-
-    await flutterNotifications.show(
-      1,
-      "Welcome to Productive Ramadan",
-      "Get started preparing for the blessed month of Ramadan",
-      generalNotificationDetails,
-      payload: "Choose an action to start managing your days in Ramadan",
-    );
-
-    //scheduled time
+    Admob.initialize();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!kIsWeb && isFirstTimeToOpenPage) {
-      _showNotification();
-      isFirstTimeToOpenPage = false;
-    }
     void goToAboutRamadan() {
       Navigator.of(context).pushReplacement(
         PageRouter(
@@ -209,36 +171,47 @@ class _LandingPageState extends State<LandingPage> {
                     ),
                   ),
                 ),
-                Divider(
-                  height: 20.0,
+                SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Divider(
+                        height: 10.0,
+                      ),
+                      button.buildButton(Colors.red, Colors.white70,
+                          "Daily Ramadan Tasks", goToDailyTasks),
+                      Divider(
+                        height: 10.0,
+                      ),
+                      button.buildButton(kDarkPink, Colors.white70,
+                          "Ramadan Todo Goals", goToTodoGoals),
+                      Divider(
+                        height: 10.0,
+                      ),
+                      button.buildButton(Theme.of(context).primaryColor,
+                          Colors.amberAccent, "Ramadan Quiz Game", goToQuiz),
+                      Divider(
+                        height: 15.0,
+                      ),
+                      button.buildButton(Colors.blueAccent, Colors.amberAccent,
+                          "About Ramadan", goToAboutRamadan),
+                      Divider(
+                        height: 10.0,
+                      ),
+                      button.buildButton(Theme.of(context).accentColor,
+                          Colors.white54, "Hadith of the day", goToDailyHadith),
+                      Divider(
+                        height: 10.0,
+                      ),
+                      button.buildButton(kDarkPurple, Colors.white54,
+                          "Ayah of the day", goToDailyAyahs),
+                    ],
+                  ),
                 ),
-                button.buildButton(Colors.red, Colors.white70,
-                    "Daily Ramadan Tasks", goToDailyTasks),
-                Divider(
-                  height: 15.0,
-                ),
-                button.buildButton(kDarkPink, Colors.white70,
-                    "Ramadan Todo Goals", goToTodoGoals),
-                Divider(
-                  height: 15.0,
-                ),
-                button.buildButton(Theme.of(context).primaryColor,
-                    Colors.amberAccent, "Ramadan Quiz Game", goToQuiz),
-                Divider(
-                  height: 15.0,
-                ),
-                button.buildButton(Colors.blueAccent, Colors.amberAccent,
-                    "About Ramadan", goToAboutRamadan),
-                Divider(
-                  height: 15.0,
-                ),
-                button.buildButton(Theme.of(context).accentColor,
-                    Colors.white54, "Hadith of the day", goToDailyHadith),
-                Divider(
-                  height: 15.0,
-                ),
-                button.buildButton(kDarkPurple, Colors.white54,
-                    "Ayah of the day", goToDailyAyahs),
+
+                //AD
+                AdmobBanner(
+                    adUnitId: ams.getBannerAdId(),
+                    adSize: AdmobBannerSize.FULL_BANNER),
               ],
             ),
           ),

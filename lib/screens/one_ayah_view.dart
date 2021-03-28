@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:productive_ramadan_app/controllers/ayah_service.dart';
 import 'package:productive_ramadan_app/models/api_response.dart';
-import 'package:productive_ramadan_app/repositories/sharedpreferences.dart';
+
 import 'package:productive_ramadan_app/utils/appbar.dart';
 
 import 'package:productive_ramadan_app/utils/constants.dart';
@@ -37,7 +37,6 @@ class _OneAyahViewState extends State<OneAyahView> {
     var hijiriDay = _today.hDay;
     widget.dayNumber = hijiriDay;
     print("Ayah daynmber ${widget.dayNumber}");
-    //widget.dayNumber = SharedPrefs.getAyahDay();
   }
 
   APIResponse<List<Ayah>> _apiResponse = APIResponse();
@@ -47,9 +46,8 @@ class _OneAyahViewState extends State<OneAyahView> {
     print("Api response " + _apiResponse.data[0].text);
     text = _apiResponse.data[0].text;
 
-    //widget.dayNumber++;
     print("Ayah view dayNumber ${widget.dayNumber}");
-    //SharedPrefs.setAyahDay(widget.dayNumber);
+
     setState(() {
       print("Day number " + widget.dayNumber.toString());
     });
@@ -83,6 +81,20 @@ class _OneAyahViewState extends State<OneAyahView> {
                     dayNumber: widget.dayNumber,
                     ayahHadithText: ayahText,
                   ),
+            widget.dayNumber == 16 ||
+                    widget.dayNumber == 17 ||
+                    widget.dayNumber == 18
+                ? Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Text(
+                      "Last Ten nights of Ramadan are approaching.  Time to step up our ibadah and finish strong inshallah for more rewards from Allah. \nStep up Ibadah to prepare for the last 10 nights",
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  )
+                : Container(),
           ],
         ),
       ),

@@ -1,16 +1,6 @@
 # productive_ramadan_app
 
-A new Flutter application.
+Productive Ramadan is an App about making Ramadan more productive.
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Ramadan, the month of mercy, Quran, fasting and connecting with Allah. We see Ramadan come and go year in and year out, and each Ramadan we plan to do so much, but most end of falling short when the reality of fasting for 30 days hits us. Have you ever wanted a better way to keep track of your Ramadan activities, or better organization of your Ramadan schedules and habits? 

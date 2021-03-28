@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:productive_ramadan_app/screens/ayah_aday_page.dart';
 import 'package:productive_ramadan_app/screens/daily_tasks.dart';
+import 'package:productive_ramadan_app/screens/donation.dart';
 import 'package:productive_ramadan_app/screens/hadith_aday.dart';
 import 'package:productive_ramadan_app/repositories/islamic_quiz.dart';
 import 'package:productive_ramadan_app/landing.dart';
-import 'package:productive_ramadan_app/screens/login_page.dart';
+
 import 'package:productive_ramadan_app/screens/one_hadith_view.dart';
 import 'package:productive_ramadan_app/screens/ramadan_dailytasks_tracker.dart';
 import 'package:productive_ramadan_app/screens/todo_goals.dart';
@@ -70,10 +71,6 @@ class PageRouter<T> extends MaterialPageRoute<T> {
         return MaterialPageRoute(
           builder: (context) => DailyTasksTracker(),
         );
-      case "/login":
-        return MaterialPageRoute(
-          builder: (context) => LoginPage(),
-        );
       case "/onehadith":
         return MaterialPageRoute(
           builder: (context) => OneHadithView(),
@@ -85,6 +82,10 @@ class PageRouter<T> extends MaterialPageRoute<T> {
       case "/aboutramadan":
         return MaterialPageRoute(
           builder: (context) => AboutRamadan(),
+        );
+      case "/donation":
+        return MaterialPageRoute(
+          builder: (context) => Donation(),
         );
     }
   }
