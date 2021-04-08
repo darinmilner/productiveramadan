@@ -5,9 +5,14 @@ class SharedPrefs {
   static SharedPreferences _sharedPrefs;
   static const _keyScore = "score";
   static const _keyDay = "dayNumber";
-  static const _keyHadithDay = "dayHadithNumber";
-  static const _keyAyahDay = "dayAyahNumber";
+  static const _keySalatTaskComplete0 = "isCompleteFjar";
+  static const _keySalatTaskComplete1 = "isCompleteDuhur";
+  static const _keySalatTaskComplete2 = "isCompleteAsr";
+  static const _keySalatTaskComplete3 = "isCompleteMaghrib";
+  static const _keySalatTaskComplete4 = "isCompleteIsha";
+  static const _keySalatDay = "daySalatNumber";
   static const _keyRemainingGoals = "numRemainingGoals";
+
   init() async {
     if (_sharedPrefs == null) {
       _sharedPrefs = await SharedPreferences.getInstance();
@@ -20,11 +25,19 @@ class SharedPrefs {
   static Future setDay(int day) async =>
       await _sharedPrefs.setInt(_keyDay, day);
 
-  static Future setHadithDay(int day) async =>
-      await _sharedPrefs.setInt(_keyHadithDay, day);
+  static Future setSalatTaskFjar(bool isDone) async =>
+      await _sharedPrefs.setBool(_keySalatTaskComplete0, isDone);
+  static Future setSalatTaskDuhr(bool isDone) async =>
+      await _sharedPrefs.setBool(_keySalatTaskComplete1, isDone);
+  static Future setSalatTaskAsr(bool isDone) async =>
+      await _sharedPrefs.setBool(_keySalatTaskComplete2, isDone);
+  static Future setSalatTaskMaghrib(bool isDone) async =>
+      await _sharedPrefs.setBool(_keySalatTaskComplete3, isDone);
+  static Future setSalatTaskIsha(bool isDone) async =>
+      await _sharedPrefs.setBool(_keySalatTaskComplete4, isDone);
 
-  static Future setAyahDay(int day) async =>
-      await _sharedPrefs.setInt(_keyAyahDay, day);
+  static Future setSalatDay(int day) async =>
+      await _sharedPrefs.setInt(_keySalatDay, day);
 
   static Future setDailyGoalRemainingAmt(int numRemaining) async =>
       await _sharedPrefs.setInt(_keyRemainingGoals, numRemaining);
@@ -33,9 +46,16 @@ class SharedPrefs {
 
   static int getDay() => _sharedPrefs.getInt(_keyDay) ?? 1;
 
-  static int getHadithDay() => _sharedPrefs.getInt(_keyHadithDay) ?? 1;
-
-  static int getAyahDay() => _sharedPrefs.getInt(_keyAyahDay) ?? 1;
+  static bool getSalatTaskCompleteFjar() =>
+      _sharedPrefs.getBool(_keySalatTaskComplete0) ?? false;
+  static bool getSalatTaskCompleteDuhr() =>
+      _sharedPrefs.getBool(_keySalatTaskComplete1) ?? false;
+  static bool getSalatTaskCompleteAsr() =>
+      _sharedPrefs.getBool(_keySalatTaskComplete2) ?? false;
+  static bool getSalatTaskCompleteMaghrib() =>
+      _sharedPrefs.getBool(_keySalatTaskComplete3) ?? false;
+  static bool getSalatTaskCompleteIsha() =>
+      _sharedPrefs.getBool(_keySalatTaskComplete4) ?? false;
 
   static int getRemainingGoalsAmt() =>
       _sharedPrefs.getInt(_keyRemainingGoals) ?? 0;

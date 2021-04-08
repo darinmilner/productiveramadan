@@ -4,7 +4,7 @@ class QuizBrain {
   int _questionNumber = 0;
   List<Question> _quizQuestions = [
     Question(q: "There are 115 surahs in the Quran.", a: false),
-    Question(q: "Ayatul Kursi is Surah Baqarah :255.", a: true),
+    Question(q: "Ayatul Kursi is in Surah Baqarah", a: true),
     Question(q: "Surah Iklas describes the uniqueness of Allah", a: true),
     Question(q: "Surah AlFatiha is the last surah ", a: false),
     Question(

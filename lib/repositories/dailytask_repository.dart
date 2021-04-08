@@ -4,9 +4,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:productive_ramadan_app/models/daily_tasks_model.dart';
 import 'package:productive_ramadan_app/models/failure_model.dart';
 import 'package:productive_ramadan_app/repositories/base_dailytask_repository.dart';
-import 'package:meta/meta.dart';
-
-import '../screens/daily_tasks.dart';
 
 final dioProvider = Provider<Dio>((ref) => Dio());
 
@@ -72,7 +69,7 @@ class DailyTaskRepository extends BaseDailyTaskRepository {
         ],
       },
       {
-        "task": "How many minutes of reading Quran",
+        "task": "How many minutes of reading Quran?",
         "correctTaskAnswer": "Read Quran more than 20 minutes.",
         "dayNumber": 1,
         "isComplete": false,
@@ -83,7 +80,7 @@ class DailyTaskRepository extends BaseDailyTaskRepository {
         ],
       },
       {
-        "task": "Did you fast?",
+        "task": "Did you fast today?",
         "correctTaskAnswer": "I completed my fast",
         "dayNumber": 1,
         "isComplete": false,
@@ -94,7 +91,7 @@ class DailyTaskRepository extends BaseDailyTaskRepository {
         ],
       },
       {
-        "task": "What extra task did you do today?",
+        "task": "What extra tasks did you do today?",
         "correctTaskAnswer": "Gave sadaqah or helped someone",
         "dayNumber": 1,
         "isComplete": false,

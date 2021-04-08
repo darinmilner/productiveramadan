@@ -6,9 +6,8 @@ import 'package:productive_ramadan_app/repositories/sharedpreferences.dart';
 import 'package:productive_ramadan_app/repositories/todo_goals_repository.dart';
 import 'package:productive_ramadan_app/utils/todo.dart';
 import 'package:productive_ramadan_app/utils/alertbox.dart';
-import 'package:productive_ramadan_app/utils/appbar.dart';
+
 import 'package:productive_ramadan_app/utils/constants.dart';
-import 'package:productive_ramadan_app/utils/side_drawer.dart';
 import 'package:productive_ramadan_app/utils/toolbar.dart';
 
 import '../landing.dart';
@@ -27,8 +26,6 @@ class TodoHome extends HookWidget {
   Widget build(BuildContext context) {
     final newTodoController = useTextEditingController();
     final todos = useProvider(filteredTodos);
-
-    MyAppBar _appBar = MyAppBar();
 
     //call DB from here
     getTodoGoalsFromDb() async {
@@ -62,22 +59,19 @@ class TodoHome extends HookWidget {
       } else {
         return;
       }
-      // pageIsLoading = false;
     }
 
     getTodoGoalsFromDb();
 
     print(todos);
 
-    // return pageIsLoading
-    //     ? CircularProgressIndicator() :
     return Scaffold(
       appBar: AppBar(
         title: Center(
           child: Text(
             "Productive Ramadan",
             style: TextStyle(
-              fontSize: 25.0,
+              fontSize: 20.0,
               color: Colors.amberAccent,
             ),
           ),
@@ -102,7 +96,10 @@ class TodoHome extends HookWidget {
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 650),
             child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 40),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 20,
+              ),
               children: [
                 Title(),
                 TextField(
@@ -125,11 +122,11 @@ class TodoHome extends HookWidget {
                   },
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 10,
                 ),
                 ToolBar(),
                 const SizedBox(
-                  height: 20,
+                  height: 10,
                 ),
                 Column(
                   children: [
@@ -220,7 +217,7 @@ class TodoItem extends HookWidget {
     final textFieldFocusNode = useFocusNode();
 
     return Padding(
-      padding: const EdgeInsets.all(15.0),
+      padding: const EdgeInsets.all(5.0),
       child: Material(
         color: Colors.white,
         elevation: 3,
@@ -243,6 +240,7 @@ class TodoItem extends HookWidget {
           },
           child: Container(
             color: Colors.teal[100],
+            width: MediaQuery.of(context).size.width * 0.9,
             child: ListTile(
               onTap: () {
                 itemFocusNode.requestFocus();

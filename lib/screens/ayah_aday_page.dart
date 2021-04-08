@@ -125,7 +125,7 @@ class _AyahADayState extends State<AyahADay> {
                             children: [
                               Column(
                                 children: [
-                                  dayNumber == 30
+                                  dayNumber == 29 || dayNumber == 30
                                       ? button.buildButton(
                                           kDarkTeal,
                                           Colors.yellow,

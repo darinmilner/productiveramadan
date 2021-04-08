@@ -4,10 +4,10 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:html_character_entities/html_character_entities.dart';
+import 'package:productive_ramadan_app/controllers/pdf_api.dart';
 import 'package:productive_ramadan_app/controllers/task_controller.dart';
 import 'package:productive_ramadan_app/controllers/task_state.dart';
 import 'package:productive_ramadan_app/models/daily_tasks_model.dart';
-import 'package:productive_ramadan_app/models/dailytasks_score_model.dart';
 import 'package:productive_ramadan_app/models/failure_model.dart';
 import 'package:productive_ramadan_app/repositories/dailytask_repository.dart';
 import 'package:productive_ramadan_app/utils/appbar.dart';
@@ -135,46 +135,56 @@ class _TaskResultsState extends State<TaskResults> {
 
   @override
   Widget build(BuildContext context) {
-    String score = widget.state.correct.length.toString() +
-        "/" +
-        widget.tasks.length.toString();
+    // String score = widget.state.correct.length.toString() +
+    //     "/" +
+    //     widget.tasks.length.toString();
 
-    if (widget.state.incorrect.length != 0) {
-      text = "Ramadan tasks that were not completed today!";
-    } else {
-      text = "All Tasks are completed today Alhamdulillah";
+    // if (widget.state.incorrect.length != 0) {
+    //   text = "Ramadan tasks that were not completed today!";
+    // } else {
+    //   text = "All Tasks are completed today Alhamdulillah";
+    // }
+    text = "Today's Ramadan Goals.  Could you complete them?";
+    List todaysTasks = [];
+    for (int i = 0; i < widget.state.correct.length; i++) {
+      todaysTasks.add(widget.state.correct[i]);
     }
+    for (int i = 0; i < widget.state.incorrect.length; i++) {
+      todaysTasks.add(widget.state.incorrect[i].task);
+    }
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Text(
-            "${score.toString()}",
-            style: TextStyle(
-              color: Colors.amberAccent,
-              fontSize: 40.0,
-              fontWeight: FontWeight.bold,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ),
-        Text(
-          "COMPLETED",
-          style: TextStyle(
-            color: Colors.amberAccent,
-            fontSize: 30.0,
-            fontWeight: FontWeight.bold,
-          ),
-          textAlign: TextAlign.center,
-        ),
+        // Padding(
+        //   padding: const EdgeInsets.all(10.0),
+        //   child: Text(
+        //     // "${score.toString()}",
+        //     "Today's Task Results",
+        //     style: TextStyle(
+        //       color: Colors.amberAccent,
+        //       fontSize: 25.0,
+        //       fontWeight: FontWeight.bold,
+        //     ),
+        //     textAlign: TextAlign.center,
+        //   ),
+        // ),
+        // Text(
+        //   "COMPLETED",
+        //   style: TextStyle(
+        //     color: Colors.amberAccent,
+        //     fontSize: 20.0,
+        //     fontWeight: FontWeight.bold,
+        //   ),
+        //   textAlign: TextAlign.center,
+        // ),
         Padding(
           padding: const EdgeInsets.only(top: 10.0),
           child: Text(
             text,
             style: TextStyle(
-              fontSize: 28,
+              fontSize: 18,
               color: Colors.teal[800],
               fontStyle: FontStyle.italic,
             ),
@@ -182,11 +192,19 @@ class _TaskResultsState extends State<TaskResults> {
           ),
         ),
         Expanded(
-          child: widget.state.incorrect.length != 0
+          // child: widget.state.incorrect.length != 0
+          child: widget.tasks.length != 0
               ? ListView.builder(
-                  itemCount: widget.state.incorrect.length,
+                  itemCount: widget.tasks.length,
                   itemBuilder: (ctx, index) {
                     print("Listview index: ${index}");
+                    print(
+                        "Todotask correct ${widget.tasks[index].correctTaskAnswer}");
+                    print("todoTask ${todaysTasks[index]}");
+
+                    // print("Answers ${widget.state.selectedAnswer[index]}" ??
+                    //     "No answers");
+                    //  print("Answers ${widget.state.correct[index]}");
 
                     return ListTile(
                         title: Padding(
@@ -201,11 +219,13 @@ class _TaskResultsState extends State<TaskResults> {
                         ),
                         elevation: 5,
                         child: Padding(
-                          padding: const EdgeInsets.all(15.0),
+                          padding: const EdgeInsets.all(10.0),
                           child: Text(
-                            "${widget.state.incorrect[index].correctTaskAnswer}",
+                            //"${widget.state.incorrect[index].correctTaskAnswer}",
+                            "${widget.tasks[index].correctTaskAnswer}",
+                            //"${todaysTasks[index]}",
                             style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 16,
                               color: Colors.red[600],
                               fontStyle: FontStyle.italic,
                             ),
@@ -227,10 +247,14 @@ class _TaskResultsState extends State<TaskResults> {
                       ),
                       elevation: 5,
                       child: Padding(
-                        padding: const EdgeInsets.all(20.0),
+                        padding: const EdgeInsets.all(10.0),
                         child: Text(
-                          "JazakAllahu Khairun, All are complete! May Allah accept your ibadah",
-                          style: kDailyTrackerTestStyle,
+                          "JazakAllahu Khairun, May Allah accept your ibadah",
+                          style: TextStyle(
+                            color: Colors.green[800],
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold,
+                          ),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -240,15 +264,20 @@ class _TaskResultsState extends State<TaskResults> {
         ),
         Center(
           child: Padding(
-            padding: const EdgeInsets.all(25.0),
+            padding: const EdgeInsets.all(20.0),
             child: Text(
               "May Allah help you to increase your ibadah throughout Ramadan and after",
-              style: kDailyTrackerTestStyle,
+              style: TextStyle(
+                color: Colors.amberAccent,
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
             ),
           ),
         ),
         Divider(
-          height: 20.0,
+          height: MediaQuery.of(context).size.height * 0.01,
         ),
         Center(
             child: Text(
@@ -257,7 +286,34 @@ class _TaskResultsState extends State<TaskResults> {
           textAlign: TextAlign.center,
         )),
         const SizedBox(
-          height: 30.0,
+          height: 20.0,
+        ),
+        Center(
+            child: Text(
+          "Get the PDF to review the daily Ramadan goals.",
+          style: kDailyTrackerTestStyle,
+          textAlign: TextAlign.center,
+        )),
+        const SizedBox(
+          height: 20.0,
+        ),
+        Container(
+          height: 60.0,
+          width: MediaQuery.of(context).size.width * 0.7,
+          padding: const EdgeInsets.all(10.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              button.buildButton(kDarkTeal, Colors.amberAccent, "Get PDF",
+                  () async {
+                final pdfFile = await PdfApi.generatePdf(
+                  widget.tasks,
+                );
+                PdfApi.openFile(pdfFile);
+              }),
+            ],
+          ),
         ),
         Container(
           height: 60.0,
@@ -271,8 +327,12 @@ class _TaskResultsState extends State<TaskResults> {
                 kDarkTeal,
                 Colors.amberAccent,
                 "Back To Home",
-                () => Navigator.of(context)
-                    .pushReplacementNamed(LandingPage.routeName),
+                () => Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => LandingPage(),
+                    ),
+                    (route) => false),
               ),
             ],
           ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:productive_ramadan_app/salat_tasks/salat_tasks_view.dart';
 import 'package:productive_ramadan_app/screens/ayah_aday_page.dart';
 import 'package:productive_ramadan_app/screens/daily_tasks.dart';
-import 'package:productive_ramadan_app/screens/donation.dart';
 import 'package:productive_ramadan_app/screens/hadith_aday.dart';
 import 'package:productive_ramadan_app/repositories/islamic_quiz.dart';
 import 'package:productive_ramadan_app/landing.dart';
@@ -83,9 +83,9 @@ class PageRouter<T> extends MaterialPageRoute<T> {
         return MaterialPageRoute(
           builder: (context) => AboutRamadan(),
         );
-      case "/donation":
+      case "/salattasks":
         return MaterialPageRoute(
-          builder: (context) => Donation(),
+          builder: (context) => SalatTasksView(),
         );
     }
   }

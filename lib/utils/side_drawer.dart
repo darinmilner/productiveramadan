@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:productive_ramadan_app/repositories/islamic_quiz.dart';
-import 'package:productive_ramadan_app/screens/donation.dart';
-import 'package:productive_ramadan_app/screens/todo_goals.dart';
+import 'package:productive_ramadan_app/salat_tasks/salat_tasks_view.dart';
 
+import '../landing.dart';
 import '../screens/ayah_aday_page.dart';
 import '../screens/daily_tasks.dart';
 import '../screens/hadith_aday.dart';
 import 'constants.dart';
 
 class SideDrawer extends StatelessWidget {
+  double fontSize = 16.0;
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
         children: [
-          // Icon(FontAwesomeIcons.bars),
           DrawerHeader(
             child: Center(
               child: Text(
@@ -35,7 +35,12 @@ class SideDrawer extends StatelessWidget {
           ),
           ListTile(
             onTap: () {
-              Navigator.of(context).pushReplacementNamed("/");
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => LandingPage(),
+                  ),
+                  (route) => false);
             },
             leading: Icon(
               FontAwesomeIcons.home,
@@ -44,7 +49,7 @@ class SideDrawer extends StatelessWidget {
             title: Text(
               "HOME",
               style: TextStyle(
-                fontSize: 25.0,
+                fontSize: fontSize,
                 color: kGreenishTeal,
               ),
             ),
@@ -60,7 +65,7 @@ class SideDrawer extends StatelessWidget {
             title: Text(
               "HADITH A DAY",
               style: TextStyle(
-                fontSize: 25.0,
+                fontSize: fontSize,
                 color: kGreenishTeal,
               ),
             ),
@@ -76,7 +81,7 @@ class SideDrawer extends StatelessWidget {
             title: Text(
               "QUIZ GAME",
               style: TextStyle(
-                fontSize: 25.0,
+                fontSize: fontSize,
                 color: kGreenishTeal,
               ),
             ),
@@ -92,7 +97,7 @@ class SideDrawer extends StatelessWidget {
             title: Text(
               "AYAH A DAY",
               style: TextStyle(
-                fontSize: 25.0,
+                fontSize: fontSize,
                 color: kGreenishTeal,
               ),
             ),
@@ -108,39 +113,24 @@ class SideDrawer extends StatelessWidget {
             title: Text(
               "DAILY TASKS",
               style: TextStyle(
-                fontSize: 25.0,
+                fontSize: fontSize,
                 color: kGreenishTeal,
               ),
             ),
           ),
           ListTile(
             onTap: () {
-              Navigator.of(context).pushReplacementNamed(TodoHome.routeName);
+              Navigator.of(context)
+                  .pushReplacementNamed(SalatTasksView.routeName);
             },
             leading: Icon(
-              FontAwesomeIcons.blog,
+              FontAwesomeIcons.quran,
               color: kGreenishTeal,
             ),
             title: Text(
-              "RAMADAN GOALS",
+              "SALAT TASKS",
               style: TextStyle(
-                fontSize: 25.0,
-                color: kGreenishTeal,
-              ),
-            ),
-          ),
-          ListTile(
-            onTap: () {
-              Navigator.of(context).pushReplacementNamed(Donation.route);
-            },
-            leading: Icon(
-              FontAwesomeIcons.moneyBill,
-              color: kGreenishTeal,
-            ),
-            title: Text(
-              "MAKE A DONATION",
-              style: TextStyle(
-                fontSize: 25.0,
+                fontSize: fontSize,
                 color: kGreenishTeal,
               ),
             ),

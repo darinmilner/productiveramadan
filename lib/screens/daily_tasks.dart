@@ -21,6 +21,7 @@ class DailyTasks extends StatelessWidget {
 
     MyAppBar _appBar = MyAppBar();
     return Scaffold(
+      backgroundColor: Colors.teal[300],
       appBar: _appBar.buildAppBar(context),
       drawer: SideDrawer(),
       body: Container(
@@ -125,7 +126,13 @@ class ReusableCard extends StatelessWidget {
           Center(
             child: Text(
               text,
-              style: kLandingPageTextStyle,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18.0,
+                fontFamily: "Syne",
+                letterSpacing: 1.5,
+                fontWeight: FontWeight.w800,
+              ),
               textAlign: TextAlign.center,
             ),
           ),

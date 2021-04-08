@@ -5,7 +5,8 @@ import 'package:productive_ramadan_app/models/api_response.dart';
 import 'package:productive_ramadan_app/models/ayah_model.dart';
 
 class AyahService {
-  static const URL = "http://10.0.2.2:8001";
+  //static const URL = "http://10.0.2.2:8001";
+  static const URL = "https://productiveramadan.herokuapp.com";
   static const headers = {"content-type": "application/json"};
 
   Future<APIResponse<List<Ayah>>> getAyahsList() async {

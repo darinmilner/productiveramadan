@@ -42,6 +42,7 @@ class ToolBar extends HookWidget {
     return Material(
       child: Container(
         color: Colors.teal[200],
+        width: MediaQuery.of(context).size.width,
         child: Column(
           children: [
             Padding(
@@ -62,23 +63,24 @@ class ToolBar extends HookWidget {
                             overflow: TextOverflow.ellipsis,
                           ),
                   ),
-                  Expanded(
-                    child: TextField(
-                        controller: searchController,
-                        decoration: const InputDecoration(
-                          labelText: "SEARCH",
-                          labelStyle: TextStyle(color: Colors.black87),
-                          border: InputBorder.none,
-                          icon: Icon(
-                            Icons.search,
-                            color: Colors.black87,
-                          ),
-                        ),
-                        onChanged: (value) {
-                          isLoading = false;
-                          search.state = value;
-                        }),
-                  ),
+                  //Search bar
+                  // Expanded(
+                  //   child: TextField(
+                  //       controller: searchController,
+                  //       decoration: const InputDecoration(
+                  //         labelText: "SEARCH",
+                  //         labelStyle: TextStyle(color: Colors.black87),
+                  //         border: InputBorder.none,
+                  //         icon: Icon(
+                  //           Icons.search,
+                  //           color: Colors.black87,
+                  //         ),
+                  //       ),
+                  //       onChanged: (value) {
+                  //         isLoading = false;
+                  //         search.state = value;
+                  //       }),
+                  // ),
                 ],
               ),
             ),

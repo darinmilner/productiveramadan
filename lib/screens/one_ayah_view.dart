@@ -89,7 +89,7 @@ class _OneAyahViewState extends State<OneAyahView> {
                     child: Text(
                       "Last Ten nights of Ramadan are approaching.  Time to step up our ibadah and finish strong inshallah for more rewards from Allah. \nStep up Ibadah to prepare for the last 10 nights",
                       style: TextStyle(
-                        fontSize: 18.0,
+                        fontSize: 15.0,
                         fontWeight: FontWeight.w800,
                       ),
                     ),

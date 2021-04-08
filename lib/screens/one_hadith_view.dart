@@ -27,6 +27,7 @@ class _OneHadithViewState extends State<OneHadithView> {
   Button button = Button();
   MyAppBar _appBar = MyAppBar();
   String text;
+  bool isLoading = false;
 
   HadithService _service = HadithService();
   HijriCalendar _today = HijriCalendar.now();
@@ -43,22 +44,28 @@ class _OneHadithViewState extends State<OneHadithView> {
   APIResponse<List<Hadith>> _apiResponse = APIResponse();
 
   getOneHadith(int day) async {
+    isLoading = true;
     _apiResponse = await _service.getOneHadith(day);
     print("Api response " + _apiResponse.data[0].text);
     text = _apiResponse.data[0].text;
-
-    print("Hadih A day number ${widget.dayNumber}");
+    isLoading = false;
+    setState(() {
+      print("Day number " + widget.dayNumber.toString());
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    isLoading = false;
     return Scaffold(
       appBar: _appBar.buildAppBar(context),
       drawer: SideDrawer(),
       bottomNavigationBar: Container(
         height: 50,
         child: AdmobBanner(
-            adUnitId: ams.getBannerAdId(), adSize: AdmobBannerSize.FULL_BANNER),
+          adUnitId: ams.getBannerAdId(),
+          adSize: AdmobBannerSize.FULL_BANNER,
+        ),
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -90,8 +97,8 @@ class _OneHadithViewState extends State<OneHadithView> {
                     )
                   : HadithAyahCard(
                       text: text,
-                      ayahHadithText: "Hadith",
                       dayNumber: widget.dayNumber,
+                      ayahHadithText: "Hadith",
                     ),
               widget.dayNumber == 16 ||
                       widget.dayNumber == 17 ||
@@ -101,7 +108,7 @@ class _OneHadithViewState extends State<OneHadithView> {
                       child: Text(
                         "Last Ten nights of Ramadan are approaching.  Time to step up our ibadah and finish strong inshallah for more rewards from Allah. \nStep up Ibadah to prepare for the last 10 nights",
                         style: TextStyle(
-                          fontSize: 18.0,
+                          fontSize: 15.0,
                           fontWeight: FontWeight.w800,
                         ),
                       ),

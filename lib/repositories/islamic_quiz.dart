@@ -39,29 +39,35 @@ class QuizPage extends StatefulWidget {
 class _QuizPageState extends State<QuizPage> {
   List<Icon> scoreKeeper = [];
   List<Icon> scoreKeeper2 = [];
+  List<Icon> scoreKeeper3 = [];
   int questionNumber = 0;
 
   void _gameOver() {
     setState(() {
       scoreKeeper = [];
       scoreKeeper2 = [];
+      scoreKeeper3 = [];
     });
     score = 0;
+    questionNumber = 0;
     quizBrain.restartGame();
   }
 
   _showAlert(context) {
     Alert(
+      onWillPopActive: true,
       context: context,
       type: AlertType.info,
       title: "Quiz Finished",
       desc: "Score: ${score}",
+      closeFunction: _gameOver,
       style: AlertStyle(
         backgroundColor: kGreenishTeal,
         overlayColor: kGreenishTeal,
       ),
       buttons: [
         DialogButton(
+          height: 50,
           color: kDarkOrangeRed,
           splashColor: kDarkOrangeRed,
           highlightColor: Colors.red,
@@ -69,13 +75,15 @@ class _QuizPageState extends State<QuizPage> {
             "TRY AGAIN",
             style: TextStyle(
               color: Colors.black,
-              fontSize: 20,
+              fontSize: 16,
             ),
           ),
           onPressed: () {
+            // Navigator.of(context).pushReplacementNamed(Quiz.quizPageRoute);
+            Navigator.of(context).pop();
             _gameOver();
           },
-          width: 120,
+          width: 140,
         ),
         DialogButton(
           color: kDarkOrangeRed,
@@ -85,16 +93,23 @@ class _QuizPageState extends State<QuizPage> {
             "HOME",
             style: TextStyle(
               color: Colors.black,
-              fontSize: 20,
+              fontSize: 16,
             ),
           ),
           onPressed: () {
-            Navigator.of(context).pushReplacementNamed(LandingPage.routeName);
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => LandingPage(),
+                ),
+                (route) => false);
           },
-          width: 120,
+          width: 140,
+          height: 50,
         ),
       ],
     ).show();
+    //_gameOver();
   }
 
   void checkAnswer(bool userPickedAnswer) {
@@ -110,7 +125,12 @@ class _QuizPageState extends State<QuizPage> {
         print("Game Score ${score}");
 
         score++;
-        if (questionNumber <= 11) {
+        if (questionNumber >= 16) {
+          questionNumber++;
+          scoreKeeper3.add(
+            Icon(Icons.check, color: kDarkGreen, size: 30.0),
+          );
+        } else if (questionNumber >= 8) {
           questionNumber++;
           print(questionNumber);
           scoreKeeper2.add(
@@ -128,8 +148,12 @@ class _QuizPageState extends State<QuizPage> {
         }
       } else {
         print("User got it wrong");
-
-        if (questionNumber <= 11) {
+        if (questionNumber >= 16) {
+          questionNumber++;
+          scoreKeeper3.add(
+            Icon(Icons.clear, color: Colors.red, size: 30.0),
+          );
+        } else if (questionNumber >= 8) {
           questionNumber++;
           scoreKeeper2.add(
             Icon(Icons.clear, color: Colors.red, size: 30.0),
@@ -201,7 +225,10 @@ class _QuizPageState extends State<QuizPage> {
               ),
               Row(
                 children: scoreKeeper2,
-              )
+              ),
+              Row(
+                children: scoreKeeper3,
+              ),
             ],
           ),
         ],

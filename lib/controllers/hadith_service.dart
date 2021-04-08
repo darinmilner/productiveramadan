@@ -5,7 +5,8 @@ import 'package:productive_ramadan_app/models/hadith_model.dart';
 import 'package:http/http.dart' as http;
 
 class HadithService {
-  static const URL = "http://10.0.2.2:8001";
+  //static const URL = "http://10.0.2.2:8001";
+  static const URL = "https://productiveramadan.herokuapp.com";
   static const headers = {"content-type": "application/json"};
   Future<APIResponse<List<Hadith>>> getHadithsList() async {
     return http
@@ -59,12 +60,7 @@ class HadithService {
           text: jsonData["Text"],
           day: jsonData["Day"],
         );
-        // for (var item in jsonData) {
-        //   print("Item in jsonData ${item}");
-        //   final newHadith = Hadith(
-        //     text: item["Text"],
-        //     day: item["Day"],
-        //   );
+
         print("newHadith ${newHadith}");
         hadith.add(newHadith);
         // }
